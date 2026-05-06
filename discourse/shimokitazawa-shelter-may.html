@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【东京 · 5 月】Shimokitazawa SHELTER 数摇专场 · 4 组阵容 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero .crumbs a:hover { color: var(--acid); }
+
+  .thread-tag-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .thread-tag-pill.tech     { color: #d4ff3a; }
+  .thread-tag-pill.rec      { color: #67e8f9; }
+  .thread-tag-pill.debate   { color: #ff5b3a; }
+  .thread-tag-pill.share    { color: #f0abfc; }
+  .thread-tag-pill.live     { color: #fcd34d; }
+  .thread-tag-pill.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 920px;
+  }
+
+  .thread-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .thread-meta-bar .author { color: var(--acid); }
+  .thread-meta-bar .stat .num {
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ========== 帖子正文 ========== */
+  .thread-content-section {
+    padding: 64px 0;
+  }
+  .thread-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.9);
+  }
+  .thread-content p { margin-bottom: 20px; }
+  .thread-content h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(212, 255, 58, 0.2);
+    color: var(--paper);
+  }
+  .thread-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    color: var(--acid);
+  }
+  .thread-content strong { color: var(--acid); font-weight: 700; }
+  .thread-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .thread-content a {
+    color: var(--acid);
+    border-bottom: 1px solid rgba(212, 255, 58, 0.4);
+    transition: border-color 0.2s;
+  }
+  .thread-content a:hover { border-bottom-color: var(--acid); }
+  .thread-content ul, .thread-content ol {
+    padding-left: 28px;
+    margin-bottom: 20px;
+  }
+  .thread-content li { margin-bottom: 8px; }
+  .thread-content blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 12px 24px;
+    margin: 24px 0;
+    background: rgba(212, 255, 58, 0.04);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .thread-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+    border-radius: 2px;
+  }
+  .thread-content pre {
+    background: var(--ink-2);
+    border: 1px solid rgba(232, 230, 221, 0.1);
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .thread-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .thread-content table {
+    width: 100%;
+    margin: 24px 0;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .thread-content table th,
+  .thread-content table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .thread-content table th {
+    color: var(--acid);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 11px;
+  }
+  .thread-content hr {
+    border: 0;
+    border-top: 1px dashed rgba(232, 230, 221, 0.15);
+    margin: 36px 0;
+  }
+
+  /* ========== 样本回复 ========== */
+  .replies-section {
+    padding: 64px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .replies-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .replies-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .replies-header .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--signal);
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    text-transform: uppercase;
+  }
+  .replies-header .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+
+  .reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reply-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .reply-item { grid-template-columns: 180px 1fr; gap: 32px; }
+  }
+  .reply-item:last-child { border-bottom: 0; }
+  .reply-meta {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .reply-meta .author {
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .reply-meta .time {
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .reply-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .reply-body p { margin-bottom: 12px; }
+  .reply-body p:last-child { margin-bottom: 0; }
+  .reply-body strong { color: var(--acid); }
+  .reply-body em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .reply-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+  }
+  .reply-body blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 8px 18px;
+    margin: 12px 0;
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .reply-body ul, .reply-body ol { padding-left: 24px; }
+  .reply-body li { margin-bottom: 6px; }
+
+  /* ========== Cusdis 占位框 ========== */
+  .comments-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .comments-placeholder {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 48px 32px;
+    position: relative;
+  }
+  .comments-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .comments-placeholder .ph-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .comments-placeholder h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .comments-placeholder p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 580px;
+  }
+  .comments-placeholder p em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  /* ========== 返回导航 ========== */
+  .back-nav {
+    padding: 32px 0 64px;
+    text-align: center;
+  }
+  .back-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    transition: color 0.2s;
+    padding: 12px 24px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .back-nav a:hover {
+    color: var(--acid);
+    border-color: var(--acid);
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="../index.html">首页 / Index</a> &nbsp;/&nbsp;
+      <a href="../discourse.html">讨论 / Discourse</a> &nbsp;/&nbsp;
+      <span style="color: var(--acid);">shimokitazawa-shelter-may</span>
+    </div>
+    <span class="thread-tag-pill live">演出</span>
+    <h1 class="thread-title">【东京 · 5 月】Shimokitazawa SHELTER 数摇专场 · 4 组阵容</h1>
+    <div class="thread-meta-bar">
+      <span class="author">LISTENER #9C44</span>
+      <span>2026-04-29 · 昨天 18:02</span>
+      <span class="stat"><span class="num">      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #1F6E</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p><strong>已抢到！</strong> Pia 上 9:03 开票，9:04 就只剩单张零散位了。下次类似阵容估计要 30 秒抢完。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #C4D5</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>上海飞东京的来报到。已经订机票了。新雪园那个聚餐我加 +1。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #7F12</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>提醒一下：SHELTER 那个地下舞台<strong>站位极重要</strong>。中后区柱子会挡视线，最佳位置是音控台前面那一块（声音也最好）。要早进场 <em>卡位</em>。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #B7A4</div>
+          <div class="time">10 小时前</div>
+        </div>
+        <div class="reply-body"><p>tricot 50 min 的 setlist 有人能预测吗？她们最近巡演主推《Fudeki》新专，但 SHELTER 这种小场可能会塞老歌。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #2C9D</div>
+          <div class="time">8 小时前</div>
+        </div>
+        <div class="reply-body"><p><strong>已确认</strong>待定那支是 LITE 三件套（无井垣的短组合）。是雪平瞬在 Twitter 上自爆的，现在已删但截图我有存。</p>
+<p>所以阵容实际是：<strong>LITE → tricot → mouse on the keys → toe</strong>——四支日本数摇 top tier 同台，这就是日本数摇的"奥林匹克"了。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #9C44</div>
+          <div class="time">5 小时前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@ARCHIVIST #2C9D 卧槽，那这场票根本就是黄金。</p>
+<p>新雪园聚餐人数现在确认 6 个，5 月 17 日 23:30 下北沢南口集合，大家加我私信对暗号。</p></div>
+      </div></span> 回复</span>
+      <span class="stat"><span class="num">689</span> 浏览</span>
+    </div>
+  </div>
+</section>
+
+<section class="thread-content-section">
+  <div class="container">
+    <article class="thread-content">
+<p>下北沢 SHELTER <strong>5 月 17 日（周日）</strong> 的整夜专场，阵容相当离谱：</p>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>乐队</th>
+<th>演出长度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18:30</td>
+<td>一支待定（疑似 LITE 短组合）</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td>19:30</td>
+<td>tricot</td>
+<td>50 min</td>
+</tr>
+<tr>
+<td>20:50</td>
+<td>mouse on the keys</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>22:00</td>
+<td><strong>toe</strong>（短组合，4 件套）</td>
+<td>60 min</td>
+</tr>
+</tbody>
+</table>
+<p><strong>预售 ¥4,500，现场 ¥5,000</strong>（不含 1D）。
+售票平台：Pia 和 e+，今天上午开票。</p>
+<hr />
+<p>为什么这场值得拼命：</p>
+<ol>
+<li><strong>toe 距离上一次在 SHELTER 演出已经 4 年</strong>——他们近年只在大场地演了。</li>
+<li><strong>mouse on the keys × toe 同一晚</strong>几乎是十年一遇——上一次是 2017 年的 Beyond the Field 联演。</li>
+<li><strong>SHELTER 容量只有 250 人</strong>，意味着这是真的 livehouse 体验，不是音乐节那种远观。</li>
+</ol>
+<hr />
+<p>需要拼票/求约伴：</p>
+<p>我自己已经买了一张。如果有人 5 月 17 日在东京、想去但还没买票，可以扣我（站内私信）。</p>
+<p><strong>注意事项</strong>：
+- 下北沢车站南口出来步行 5 分钟，地下入口有点难找，请提前 30 分钟到。
+- 拍照禁止，但允许在乐队之间的间歇拍场地照。
+- 演出结束后下北沢有夜班车直达涩谷/新宿，最晚 23:50。</p>
+<p>如果有人去，演出后一起在车站附近的 <em>新雪园</em> 吃个东西聊聊？老板娘是 toe 长期的粉丝，墙上挂满了他们的签名 setlist。</p>
+    </article>
+  </div>
+</section>
+
+<section class="replies-section">
+  <div class="container">
+    <div class="replies-header">
+      <h2>样本回复</h2>
+      <span class="badge">▲ FIXTURE · 虚构</span>
+      <span class="count">6 replies</span>
+    </div>
+    <div class="reply-list">
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #1F6E</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p><strong>已抢到！</strong> Pia 上 9:03 开票，9:04 就只剩单张零散位了。下次类似阵容估计要 30 秒抢完。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #C4D5</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>上海飞东京的来报到。已经订机票了。新雪园那个聚餐我加 +1。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #7F12</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>提醒一下：SHELTER 那个地下舞台<strong>站位极重要</strong>。中后区柱子会挡视线，最佳位置是音控台前面那一块（声音也最好）。要早进场 <em>卡位</em>。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #B7A4</div>
+          <div class="time">10 小时前</div>
+        </div>
+        <div class="reply-body"><p>tricot 50 min 的 setlist 有人能预测吗？她们最近巡演主推《Fudeki》新专，但 SHELTER 这种小场可能会塞老歌。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #2C9D</div>
+          <div class="time">8 小时前</div>
+        </div>
+        <div class="reply-body"><p><strong>已确认</strong>待定那支是 LITE 三件套（无井垣的短组合）。是雪平瞬在 Twitter 上自爆的，现在已删但截图我有存。</p>
+<p>所以阵容实际是：<strong>LITE → tricot → mouse on the keys → toe</strong>——四支日本数摇 top tier 同台，这就是日本数摇的"奥林匹克"了。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #9C44</div>
+          <div class="time">5 小时前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@ARCHIVIST #2C9D 卧槽，那这场票根本就是黄金。</p>
+<p>新雪园聚餐人数现在确认 6 个，5 月 17 日 23:30 下北沢南口集合，大家加我私信对暗号。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <div class="container">
+    <div class="comments-placeholder">
+      <div class="ph-label">
+      </p>
+
+      <!--
+        ====================================================================
+        FUTURE INTEGRATION · 未来部署 Cusdis 时的接入指南
+        ====================================================================
+
+        步骤 1: fork https://github.com/djyde/cusdis 部署到 Vercel
+        步骤 2: 配置 Vercel Postgres 数据库
+        步骤 3: 拿到你的 host URL 和 app_id
+        步骤 4: 把下面这段代码取消注释、替换占位符即可
+
+        <div id="cusdis_thread"
+             data-host="https://你的cusdis域名.vercel.app"
+             data-app-id="你的-app-id-uuid"
+             data-page-id="thread-004"
+             data-page-url="https://你的网站域名/discourse/shimokitazawa-shelter-may.html"
+             data-page-title="【东京 · 5 月】Shimokitazawa SHELTER 数摇专场 · 4 组阵容">
+        </div>
+        <script async defer src="https://你的cusdis域名.vercel.app/js/cusdis.es.js"></script>
+
+        ====================================================================
+      -->
+    </div>
+  </div>
+</section>
+
+<section class="back-nav">
+  <div class="container">
+    <a href="../discourse.html">← 返回讨论列表</a>
+  </div>
+</section>
+
+<script src="../shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+</script>
+
+</body>
+</html>

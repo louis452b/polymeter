@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身份验证 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  body { overflow: hidden; }
+  .site-footer { display: none; }
+
+  .login-stage {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-top: 80px;
+  }
+  @media (min-width: 1024px) {
+    .login-stage { grid-template-columns: 5fr 7fr; padding-top: 0; }
+  }
+
+  /* ========== 左侧：表单 ========== */
+  .login-form-side {
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  @media (min-width: 1024px) {
+    .login-form-side { padding: 96px 64px; }
+  }
+
+  .login-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .login-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .login-title .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.32em;
+    color: var(--paper-dim);
+    margin-top: 0.4em;
+  }
+  .login-sub {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 440px;
+  }
+
+  .login-form {
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 440px;
+  }
+  .form-field label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    display: block;
+    margin-bottom: 10px;
+  }
+  .form-field input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.25);
+    padding: 12px 0;
+    color: var(--paper);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-field input:focus { border-color: var(--acid); }
+  .form-field input::placeholder { color: rgba(232, 230, 221, 0.25); font-weight: 300; }
+  .form-field .hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(212, 255, 58, 0.6);
+    margin-top: 6px;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .form-row label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--paper-dim);
+  }
+  .form-row input[type=checkbox] {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(232, 230, 221, 0.3);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .form-row input[type=checkbox]:checked {
+    background: var(--acid);
+    border-color: var(--acid);
+  }
+  .form-row input[type=checkbox]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -3px;
+    left: 1px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .form-row a {
+    color: var(--paper-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .form-row a:hover { color: var(--acid); }
+
+  .login-submit {
+    width: 100%;
+    background: var(--acid);
+    color: var(--ink);
+    padding: 18px;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    border: 1px solid var(--acid);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .login-submit:hover {
+    background: var(--paper);
+    border-color: var(--paper);
+    letter-spacing: 0.2em;
+  }
+  .login-submit .arrow { transition: transform 0.2s; }
+  .login-submit:hover .arrow { transform: translateX(4px); }
+
+  .alt-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    margin: 8px 0;
+  }
+  .alt-divider::before, .alt-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(232, 230, 221, 0.15);
+  }
+
+  .alt-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .alt-btn {
+    border: 1px solid rgba(232, 230, 221, 0.2);
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .alt-btn:hover {
+    border-color: var(--acid);
+    color: var(--acid);
+  }
+
+  .login-footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .login-footer a { color: var(--acid); margin-left: 6px; }
+
+  /* ========== 右侧：动态视觉 ========== */
+  .login-visual-side {
+    position: relative;
+    background: var(--ink-2);
+    border-left: 1px solid rgba(232, 230, 221, 0.1);
+    overflow: hidden;
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .login-visual-side { display: block; }
+  }
+
+  .visual-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212, 255, 58, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 255, 58, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .visual-corners {
+    position: absolute;
+    inset: 32px;
+    pointer-events: none;
+  }
+  .visual-corners::before, .visual-corners::after,
+  .visual-corner-tr, .visual-corner-bl {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--acid);
+  }
+  .visual-corners::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .visual-corners::after { bottom: 0; right: 0; border-left: none; border-top: none; }
+  .visual-corner-tr { top: 32px; right: 32px; border-left: none; border-bottom: none; }
+  .visual-corner-bl { bottom: 32px; left: 32px; border-right: none; border-top: none; }
+
+  .visual-canvas-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #lissajous {
+    width: 80%;
+    max-width: 600px;
+    aspect-ratio: 1;
+  }
+
+  .visual-readout {
+    position: absolute;
+    bottom: 64px;
+    left: 64px;
+    right: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+  .visual-readout-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .visual-readout-block .v {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--paper);
+    letter-spacing: 0;
+  }
+  .visual-readout-block .l { color: var(--paper-dim); font-size: 9px; }
+
+  .visual-title {
+    position: absolute;
+    top: 64px;
+    left: 64px;
+    right: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--acid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .visual-rec {
+    display: flex; align-items: center; gap: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-stage">
+
+  <!-- 左侧表单 -->
+  <div class="login-form-side scanlines">
+    <div class="login-meta">
+      <span class="pulse-dot"></span>
+      安全终端 · SECURE TERMINAL · 0x4D52
+    </div>
+
+    <h1 class="login-title">
+      请输入身份
+      <span class="en">— authenticate to continue</span>
+    </h1>
+    <p class="login-sub">
+      登录后即可保存收藏曲目、追踪你的"听感图谱"，并贡献条目到公共档案。仅供研究与教学使用。
+    </p>
+
+    <form class="login-form" onsubmit="event.preventDefault(); fakeLogin();">
+      <div class="form-field">
+        <label>// 邮箱 · email address</label>
+        <input type="email" placeholder="reader@polymeter.fm" required>
+      </div>
+      <div class="form-field">
+        <label>// 密码 · access key</label>
+        <input type="password" placeholder="••••••••••••" required>
+        <div class="hint">提示：密码区分大小写</div>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <input type="checkbox" checked>
+          <span>记住此终端</span>
+        </label>
+        <a href="#">忘记密码？</a>
+      </div>
+
+      <button type="submit" class="login-submit">
+        <span>验证身份 / AUTHENTICATE</span>
+        <span class="arrow">→</span>
+      </button>
+
+      <div class="alt-divider">或 · OR</div>
+
+      <div class="alt-buttons">
+        <button type="button" class="alt-btn">GitHub</button>
+        <button type="button" class="alt-btn">Spotify</button>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      还没有账号？<a href="#">注册新账号 / Register →</a>
+    </div>
+  </div>
+
+  <!-- 右侧动态视觉：利萨如曲线 -->
+  <div class="login-visual-side">
+    <div class="visual-grid-bg"></div>
+    <div class="visual-corners">
+      <span class="visual-corner-tr"></span>
+      <span class="visual-corner-bl"></span>
+    </div>
+
+    <div class="visual-title">
+      <span></span>
+      <span class="visual-rec"><span class="signal-dot"></span></span>
+    </div>
+
+    <div class="visual-canvas-wrap">
+      <svg id="lissajous" viewBox="-200 -200 400 400">
+        <polyline id="liss-path" fill="none" stroke="var(--acid)" stroke-width="1.2" style="filter: drop-shadow(0 0 8px var(--acid));"/>
+        <circle id="liss-dot" r="4" fill="var(--signal)"/>
+        <!-- 坐标轴 -->
+        <line x1="-180" y1="0" x2="180" y2="0" stroke="var(--acid)" stroke-opacity="0.15" stroke-dasharray="2 4"/>
+        <line x1="0" y1="-180" x2="0" y2="180" stroke="var(--acid)" stroke-opacity="0.15" stroke-dasharray="2 4"/>
+        <!-- 刻度 -->
+        <g id="liss-ticks"></g>
+      </svg>
+    </div>
+
+    <div class="visual-readout">
+      <div class="visual-readout-block">
+        <div class="l">FREQ X</div>
+        <div class="v" id="freq-x">3</div>
+      </div>
+      <div class="visual-readout-block">
+        <div class="l">FREQ Y</div>
+        <div class="v" id="freq-y">2</div>
+      </div>
+      <div class="visual-readout-block">
+        <div class="l">PHASE φ</div>
+        <div class="v" id="phase">0.00</div>
+      </div>
+      <div class="visual-readout-block">
+        <div class="l">RATIO</div>
+        <div class="v" id="ratio">3:2</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="shared/core.js"></script>
+<script>
+  initPage('login.html');
+
+  // ========== 利萨如曲线 ==========
+  (function() {
+    const path = document.getElementById('liss-path');
+    const dot = document.getElementById('liss-dot');
+    const ticksEl = document.getElementById('liss-ticks');
+
+    // 刻度
+    let tickHTML = '';
+    for (let i = -3; i <= 3; i++) {
+      if (i === 0) continue;
+      const x = i * 60;
+      tickHTML += `<line x1="${x}" y1="-3" x2="${x}" y2="3" stroke="var(--acid)" stroke-opacity="0.3"/>`;
+      tickHTML += `<line x1="-3" y1="${x}" x2="3" y2="${x}" stroke="var(--acid)" stroke-opacity="0.3"/>`;
+    }
+    ticksEl.innerHTML = tickHTML;
+
+    // 频率比缓慢漂移：3:2 → 5:4 → 7:8 等
+    const ratios = [
+      { x: 3, y: 2 },
+      { x: 5, y: 4 },
+      { x: 7, y: 5 },
+      { x: 4, y: 3 },
+      { x: 7, y: 8 },  // 致敬 7/8 拍
+      { x: 11, y: 8 },
+    ];
+    let ratioIdx = 0;
+    setInterval(() => {
+      ratioIdx = (ratioIdx + 1) % ratios.length;
+    }, 5000);
+
+    window.subscribeTick((tick) => {
+      const { x: fx, y: fy } = ratios[ratioIdx];
+      const phase = (tick * 0.02) % (Math.PI * 2);
+
+      const points = [];
+      const steps = 360;
+      for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * Math.PI * 2;
+        const px = Math.sin(fx * t + phase) * 160;
+        const py = Math.sin(fy * t) * 160;
+        points.push(`${px},${py}`);
+      }
+      path.setAttribute('points', points.join(' '));
+
+      // 移动的红点
+      const dotT = (tick * 0.05) % (Math.PI * 2);
+      dot.setAttribute('cx', Math.sin(fx * dotT + phase) * 160);
+      dot.setAttribute('cy', Math.sin(fy * dotT) * 160);
+
+      document.getElementById('freq-x').textContent = fx;
+      document.getElementById('freq-y').textContent = fy;
+      document.getElementById('phase').textContent = phase.toFixed(2);
+      document.getElementById('ratio').textContent = `${fx}:${fy}`;
+    });
+  })();
+
+  // 假登录（演示用）
+  function fakeLogin() {
+    alert('登录演示：这是一个静态展示页面，没有连接真实后端。');
+  }
+</script>
+
+</body>
+</html>

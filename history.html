@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>历史 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 64px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .page-hero h1 .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.32em;
+    color: var(--paper-dim);
+    margin-top: 0.4em;
+  }
+  .page-hero .lead {
+    margin-top: 32px;
+    max-width: 780px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+
+  /* ========== 时代分段引言 ========== */
+  .era-marker {
+    padding: 96px 0 32px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .era-marker.first { border-top: 0; padding-top: 64px; }
+  .era-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 1024px) { .era-grid { grid-template-columns: 4fr 8fr; gap: 64px; align-items: baseline; } }
+  .era-marker .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 12px;
+  }
+  .era-marker h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .era-marker h2 .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.4em;
+    color: var(--paper-dim);
+    margin-top: 8px;
+  }
+  .era-marker .desc {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .era-marker .desc em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .era-marker .desc strong { color: var(--acid); }
+
+  /* ========== 时间线 ========== */
+  .timeline-wrap {
+    padding: 32px 0 96px;
+  }
+  .timeline {
+    position: relative;
+    padding: 32px 0;
+  }
+  .timeline-axis {
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(232, 230, 221, 0.15);
+  }
+  .timeline-events {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+    position: relative;
+  }
+  .tl-row {
+    display: flex;
+    align-items: flex-start;
+  }
+  .tl-row.right { justify-content: flex-start; padding-left: 52%; }
+  .tl-row.left  { justify-content: flex-end; padding-right: 52%; }
+  .tl-card {
+    position: relative;
+    padding: 24px 28px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    background: var(--ink);
+    max-width: 520px;
+    transition: all 0.3s;
+  }
+  .tl-card:hover {
+    border-color: var(--acid);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(212, 255, 58, 0.08);
+  }
+  .tl-row.right .tl-card::before,
+  .tl-row.left  .tl-card::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    width: 48px;
+    height: 1px;
+    background: rgba(212, 255, 58, 0.4);
+  }
+  .tl-row.right .tl-card::before { left: -48px; }
+  .tl-row.left  .tl-card::before { right: -48px; }
+  .tl-row.right .tl-card::after,
+  .tl-row.left  .tl-card::after {
+    content: '';
+    position: absolute;
+    top: 22px;
+    width: 13px; height: 13px;
+    border: 1px solid var(--acid);
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+  .tl-row.right .tl-card::after { left: -54px; }
+  .tl-row.left  .tl-card::after { right: -54px; }
+  .tl-row.major .tl-card { border-color: var(--acid); }
+  .tl-row.major .tl-card::after { background: var(--acid); }
+
+  .tl-year-block {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .tl-year {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--acid);
+    line-height: 1;
+  }
+  .tl-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--paper-dim);
+    padding: 3px 8px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .tl-tag.major { color: var(--acid); border-color: var(--acid); }
+  .tl-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.3;
+    margin-top: 8px;
+  }
+  .tl-title .en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--paper-dim);
+    display: block;
+    margin-top: 4px;
+  }
+  .tl-note {
+    font-size: 14px;
+    color: rgba(232, 230, 221, 0.75);
+    margin-top: 14px;
+    line-height: 1.75;
+  }
+  .tl-note strong { color: var(--acid); }
+  .tl-note em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  @media (max-width: 768px) {
+    .timeline-axis { left: 16px; }
+    .tl-row.right, .tl-row.left {
+      justify-content: flex-start;
+      padding-left: 56px;
+      padding-right: 0;
+    }
+    .tl-row.right .tl-card::before,
+    .tl-row.left .tl-card::before {
+      left: -40px;
+      right: auto;
+      width: 40px;
+    }
+    .tl-row.right .tl-card::after,
+    .tl-row.left .tl-card::after {
+      left: -46px;
+      right: auto;
+    }
+  }
+
+  /* ========== 收尾 ========== */
+  .epilogue {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .epilogue-text {
+    max-width: 720px;
+    margin-top: 56px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .epilogue-text p { margin-bottom: 16px; }
+  .epilogue-text em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .epilogue-text strong { color: var(--acid); }
+  .epilogue-quote {
+    border-left: 2px solid var(--acid);
+    padding: 16px 24px;
+    margin: 32px 0;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="index.html">首页 / Index</a> &nbsp;/&nbsp; <span style="color: var(--acid);">历史 / History</span>
+    </div>
+    <h1>
+      四十年 · 历史
+      <span class="en">— forty years of unstable time</span>
+    </h1>
+    <p class="lead">
+      数学摇滚不是凭空出现的。它从 1980 年代美国的<strong style="color: var(--acid);">后硬核</strong>与<strong style="color: var(--acid);">no-wave</strong> 中分化而出，跨越四十年，从路易维尔的小酒吧扩散到全球互联网。这一章是它的<em>编年史</em>——14 个标志性时刻，串起整个流派的成长。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 第一时代：源起 1981-1991 ============ -->
+<section class="era-marker first">
+  <div class="container">
+    <div class="era-grid">
+      <div>
+        <div class="label">第一时代 · ERA I</div>
+        <h2>源起<span class="en">— origins · 1981 to 1991</span></h2>
+      </div>
+      <div class="desc">
+        <p>"数学摇滚"这个词最初是个<em>玩笑</em>。1980 年代后期，乐评人开始嘲笑某些乐队"听起来像在算数学题"。但这群乐队没有反驳——他们直接接住了这个标签，把它做成了一个流派。</p>
+        <p>这一时代以美国中西部和南部的<strong>后硬核</strong>场景为温床。Black Flag、Minutemen 等乐队已经在朋克的框架里实验复杂节奏，Slint 把这种实验推向了极致——而 King Crimson 1981 年的《Discipline》则在更早一点为整个流派提供了理论模板。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline-wrap">
+  <div class="container">
+    <div class="timeline">
+      <div class="timeline-axis"></div>
+      <div class="timeline-events" id="events-1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 第二时代：扩散 1996-2005 ============ -->
+<section class="era-marker">
+  <div class="container">
+    <div class="era-grid">
+      <div>
+        <div class="label">第二时代 · ERA II</div>
+        <h2>扩散<span class="en">— diffusion · 1996 to 2005</span></h2>
+      </div>
+      <div class="desc">
+        <p>《Spiderland》之后，数学摇滚开始<em>分裂</em>。一支队伍走向更柔软的领域——把复杂节奏与情绪核（emo）融合，催生了 American Football 一类的"中西部数情绪核"。另一支保留了实验性，走向 post-rock 与 noise rock 的交叉地带。</p>
+        <p>2000 年前后，数摇渡过了太平洋，在东京、大阪生根。Toe 的成立标志着<strong>日式数摇</strong>的诞生——从此这个流派不再是美国独有。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline-wrap">
+  <div class="container">
+    <div class="timeline">
+      <div class="timeline-axis"></div>
+      <div class="timeline-events" id="events-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 第三时代：制度化 2007-2016 ============ -->
+<section class="era-marker">
+  <div class="container">
+    <div class="era-grid">
+      <div>
+        <div class="label">第三时代 · ERA III</div>
+        <h2>制度化<span class="en">— institutionalization · 2007 to 2016</span></h2>
+      </div>
+      <div class="desc">
+        <p>这十年间，数学摇滚获得了它的<em>基础设施</em>——专属厂牌（Sargent House、Topshelf、Big Scary Monsters）、专属音乐节（ArcTanGent）、专属媒体（Fecking Bahamas）。从一个"地下"流派变成了一个有展览空间、有评奖逻辑、有学术讨论的<strong>正式音乐场景</strong>。</p>
+        <p>同期，英国数摇浪潮兴起、CHON 等乐队让流派"好听化"——这一切让 2010 年代成为数摇<em>历史上最繁荣的时期</em>。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline-wrap">
+  <div class="container">
+    <div class="timeline">
+      <div class="timeline-axis"></div>
+      <div class="timeline-events" id="events-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 第四时代：互联网时代 2018-至今 ============ -->
+<section class="era-marker">
+  <div class="container">
+    <div class="era-grid">
+      <div>
+        <div class="label">第四时代 · ERA IV</div>
+        <h2>互联网<span class="en">— internet age · 2018 to now</span></h2>
+      </div>
+      <div class="desc">
+        <p>YouTube 短视频、TikTok、Bandcamp 重塑了数学摇滚的传播逻辑。Standards 的 Marcos Mena 用一个 30 秒的吉他视频获得了超过过去乐队十年才能获得的听众。<strong>"卧室数摇"</strong>成为这一代的关键词——一个人 + 一台电脑就能产出整张专辑，地理位置不再重要。</p>
+        <p>同时，老一代的复出与传承也在进行。2024 年 Don Caballero 的 Damon Che 与 El Ten Eleven 的 Kristian Dunn 组建 Yesness，打破了"前辈乐队不可能再创造历史"的偏见。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline-wrap">
+  <div class="container">
+    <div class="timeline">
+      <div class="timeline-axis"></div>
+      <div class="timeline-events" id="events-4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 收尾 ============ -->
+<section class="epilogue">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">∞</span>
+      <div>
+        <h2>未尽 · 之书</h2>
+        <div class="subtitle-en">An open ending · the unfinished volume</div>
+      </div>
+    </div>
+
+    <div class="epilogue-text">
+      <p>四十年之后，数学摇滚仍然是一个<em>松散的家族</em>，而不是一个被定义的流派。它没有教父级人物（Slint 早就解散了），没有标志性服饰，没有专属的政治立场——它只有<strong>一种共同的好奇心</strong>：节奏可以多复杂？吉他可以有多少种声音？没有人声的音乐能讲多深的故事？</p>
+      <div class="epilogue-quote">
+        "数学摇滚是<em>提问</em>，不是回答。每一支新乐队加入这场对话，都是在用自己的方式重新提一遍这些问题。"
+      </div>
+      <p>这本田野指南的下一章是空白的——等着 2026 年、2027 年的乐队来填写。如果你正在读这段文字、并且有一把吉他在手边，那么<em>你</em> 也是这部历史的潜在作者。</p>
+    </div>
+  </div>
+</section>
+
+<script src="shared/core.js"></script>
+<script>
+  initPage('history.html');
+
+  const ERAS = {
+    1: [  // 1981-1991
+      {
+        year: '1981', side: 'left', major: true, tag: '前史 · prehistory',
+        title: 'King Crimson《Discipline》发行',
+        titleEn: 'Polymeter goes mainstream',
+        note: '英国前卫摇滚乐队 King Crimson 发行《Discipline》。专辑大量使用 5/8、7/8、17/16 等不规则拍号 + 复合拍号——为后来的数学摇滚提供了<em>理论模板</em>。如果说数摇有一份"祖谱"，这是第一行。'
+      },
+      {
+        year: '1985', side: 'right', tag: '场景萌芽',
+        title: 'Slint 在路易维尔聚集',
+        titleEn: 'Pre-Slint members gather in Louisville',
+        note: '后来组建 Slint 的成员当时仍在另一支乐队 Squirrel Bait 里。他们的成员后来分化出 Slint、Bastro、Will Oldham（Bonnie "Prince" Billy）—— 路易维尔成为整个第一波运动的<strong>地理中心</strong>。'
+      },
+      {
+        year: '1986', side: 'left', tag: '乐队成立',
+        title: 'Slint 正式组建',
+        titleEn: 'Slint forms officially',
+        note: 'Brian McMahan、David Pajo、Britt Walford 在路易维尔组成 Slint。同年发行首张专辑《Tweez》——已经能听到<em>quiet-loud-quiet</em>动态对比的雏形，但还不够成熟。'
+      },
+      {
+        year: '1989', side: 'right', tag: '乐队成立',
+        title: 'Don Caballero 在匹兹堡组建',
+        titleEn: 'Don Caballero forms in Pittsburgh',
+        note: 'Damon Che（鼓）与几位匹兹堡音乐人成立 Don Caballero。他们从一开始就<em>放弃人声</em>，专注于器乐与节奏。Damon Che 的鼓技后来被誉为"数摇最伟大的鼓"。'
+      },
+      {
+        year: '1991', side: 'left', major: true, tag: '⭐ 大爆炸 · big bang',
+        title: '《Spiderland》发行',
+        titleEn: 'The Big Bang of math rock',
+        note: 'Slint 的第二张专辑《Spiderland》面世。这张专辑被广泛公认为<strong>数学摇滚的奠基之作</strong>——低保真录音、安静-爆发结构、5/4 与 7/8 拍的运用、念白式人声——所有这些后来成为流派标志的元素都在这一张专辑里完整呈现。专辑发行不久后乐队即解散，让这张唱片成为永远的"未完成的预言"。'
+      },
+    ],
+    2: [  // 1996-2005
+      {
+        year: '1996', side: 'right', tag: '分支诞生',
+        title: 'American Football 在伊利诺伊组建',
+        titleEn: 'American Football forms in Urbana',
+        note: 'Mike Kinsella、Steve Holmes、Steve Lamos 在 Urbana 大学城组成 American Football。他们把数摇的复杂节奏与<em>情绪核（emo）</em> 的内省气质融合——为整个"中西部数情绪核"流派打下基础。'
+      },
+      {
+        year: '1999', side: 'left', major: true, tag: '⭐ 范式转变',
+        title: 'American Football 同名首专',
+        titleEn: 'American Football LP1 — Emo + math fused',
+        note: '专辑封面那栋路易斯安那大学城里的<em>窗户房子</em>后来成为整个流派最有辨识度的视觉符号。专辑里《Never Meant》的开场琶音可能是数摇史上被翻弹最多的一段——开放调弦 + 双手点弦的组合定义了一代乐手的练习曲。'
+      },
+      {
+        year: '2000', side: 'right', major: true, tag: '⭐ 跨洋',
+        title: 'toe 在东京成立',
+        titleEn: 'toe forms in Tokyo · genre crosses the Pacific',
+        note: '日本数摇四人组 toe 成立。他们去掉了人声，加重了爵士乐与后摇影响，让<strong>日式数摇</strong>成为一个独立的、与美国第一波平行的流派。toe 后来对中国、韩国、东南亚的同类乐队影响深远——很多亚洲数摇乐队是<em>先听到 toe 才知道有数摇这种音乐</em>。'
+      },
+      {
+        year: '2002', side: 'left', tag: '实验分支',
+        title: 'Battles 在纽约组建',
+        titleEn: 'Battles forms in NYC · post-noise math',
+        note: 'John Stanier（前 Helmet 鼓手）、Tyondai Braxton 等人成立 Battles。他们把数摇与 krautrock、IDM、电子音乐结合，创造了一种<em>几乎是另一种音乐</em> 的东西。2007 年的《Mirrored》专辑会成为这条支线的代表作。'
+      },
+    ],
+    3: [  // 2007-2016
+      {
+        year: '2007', side: 'right', tag: '基础设施',
+        title: 'Sargent House 厂牌成立',
+        titleEn: 'Sargent House label founded',
+        note: 'Cathy Pellow 在洛杉矶创立 Sargent House，专注于数摇、post-rock、实验音乐。这个厂牌后来签下了 Tera Melos、This Will Destroy You、Boris、Russian Circles 等关键乐队，成为<strong>数摇的"专属唱片公司"</strong>。'
+      },
+      {
+        year: '2007', side: 'left', major: true, tag: '⭐ 神专 · cornerstone',
+        title: 'Battles《Mirrored》发行',
+        titleEn: '《Atlas》hits global airwaves',
+        note: '专辑里的《Atlas》成为 21 世纪最具辨识度的数摇歌曲之一——krautrock 的循环 + 数摇的复节奏 + 几乎听不懂的变调人声。这首歌登上了 Pitchfork、NME 各种"年度最佳"榜单，让数摇<em>第一次进入主流视野</em>。'
+      },
+      {
+        year: '2008', side: 'right', tag: '英国浪潮',
+        title: 'TTNG《Animals》— 英国数摇崛起',
+        titleEn: 'British math wave begins',
+        note: '牛津的 This Town Needs Guns（后改名 TTNG）发行《Animals》——每首歌以一种动物命名，每首都使用怪拍号。这张专辑标志着<strong>英国数摇浪潮</strong>的开端，后来 Alpha Male Tea Party、Delta Sleep、ASIWYFA 都是这一脉的传人。'
+      },
+      {
+        year: '2013', side: 'left', major: true, tag: '⭐ 节日',
+        title: 'ArcTanGent 音乐节首届',
+        titleEn: 'ArcTanGent festival debuts',
+        note: '英国布里斯托附近，专门为数摇、post-rock、math-pop 而设的音乐节 ArcTanGent 首届举办。这是<em>数摇第一次有了自己的"主场"</em>——三天时间，几十个乐队，全部都是奇怪拍号。它后来成为数摇乐手的"麦加"，每年八月吸引来自全球的听众。'
+      },
+      {
+        year: '2015', side: 'right', tag: '主流化',
+        title: 'CHON《Grow》— 数摇变得"好听"',
+        titleEn: '《Grow》makes math rock palatable',
+        note: '圣地亚哥的 CHON 发行《Grow》。明亮的爵士和声 + 双吉他点弦 + 接近 fusion 的演奏——这张专辑把数摇的复杂技术做得<em>像咖啡馆背景音</em>那么容易接受。它在 Spotify 上的播放量超过了之前所有数摇专辑的总和，让流派获得了一批<strong>非乐手听众</strong>。'
+      },
+      {
+        year: '2016', side: 'left', tag: '复兴',
+        title: 'American Football 重组并发新专',
+        titleEn: 'American Football reunites · LP2',
+        note: '解散 17 年后，American Football 重新集结，发行《LP2》。这张专辑虽然不像首专那样具开创性，但它的存在本身就<em>象征</em>着——第一波先驱并未死去，他们仍在与新一代对话。'
+      },
+    ],
+    4: [  // 2018-至今
+      {
+        year: '2019', side: 'right', tag: '互联网时代',
+        title: 'Standards 通过 YouTube 病毒式爆红',
+        titleEn: 'Standards goes viral via YouTube',
+        note: '洛杉矶二人组 Standards 的 Marcos Mena 通过 YouTube 现场视频走红——他用一把吉他<em>同时演奏贝斯线和主旋律</em>，让无数乐手震惊。Standards 是<strong>"卧室数摇"时代</strong>的代表——不靠传统厂牌，纯靠互联网传播。'
+      },
+      {
+        year: '2021', side: 'left', tag: '边界扩张',
+        title: 'black midi《Cavalcade》— 数摇 × 实验摇滚',
+        titleEn: 'black midi blurs the genre boundary',
+        note: '伦敦的 black midi 发行《Cavalcade》。严格说他们是"实验摇滚"或"brutal prog"，但作品里大量数摇元素——突变结构、不规则拍号、点弦——让<em>数摇与实验摇滚之间的边界变得越来越模糊</em>。'
+      },
+      {
+        year: '2024', side: 'right', major: true, tag: '⭐ 传承',
+        title: 'Yesness 成立 — Don Caballero × El Ten Eleven',
+        titleEn: 'Damon Che × Kristian Dunn join forces',
+        note: 'Don Caballero 的 Damon Che（鼓）与 El Ten Eleven 的 Kristian Dunn（双颈贝斯/吉他）组成 Yesness，发行首专《See You at the Solipsist Convention》。Fecking Bahamas 把这张专辑评为 2024 年榜首——<strong>第一波先驱与互联网时代的中坚</strong>合作，象征着数摇代际传承的可能。'
+      },
+      {
+        year: '2025', side: 'left', tag: '当下',
+        title: 'Mogwai《The Bad Fire》— 后摇老炮儿回归',
+        titleEn: 'Mogwai returns to experimental form',
+        note: '苏格兰后摇巨头 Mogwai 发行《The Bad Fire》。虽然 Mogwai 通常被归为后摇，但这张专辑回到了《Hardcore Will Never Die》的实验弧线，<em>让数摇与后摇的家族关系</em> 又一次清晰可见。'
+      },
+    ],
+  };
+
+  function renderEvents(eraNum) {
+    const events = ERAS[eraNum];
+    document.getElementById(`events-${eraNum}`).innerHTML = events.map(e => `
+      <div class="tl-row ${e.side} ${e.major ? 'major' : ''}">
+        <div class="tl-card">
+          <div class="tl-year-block">
+            <span class="tl-year">${e.year}</span>
+            <span class="tl-tag ${e.major ? 'major' : ''}">${e.tag}</span>
+          </div>
+          <div class="tl-title">${e.title}<span class="en">${e.titleEn}</span></div>
+          <div class="tl-note">${e.note}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  [1, 2, 3, 4].forEach(renderEvents);
+</script>
+
+</body>
+</html>

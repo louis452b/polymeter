@@ -1,0 +1,439 @@
+/* ==========================================================
+   复拍 POLYMETER — 共享样式表
+   美学方向：实验室仪器面板 × 科学期刊
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+/* -------- 设计令牌 -------- */
+:root {
+  --ink: #0d0e0a;             /* 主背景：深绿黑 */
+  --ink-2: #0a0b07;           /* 更深的容器背景 */
+  --paper: #e8e6dd;           /* 主前景：羊皮纸色 */
+  --paper-dim: rgba(232, 230, 221, 0.6);
+  --paper-faint: rgba(232, 230, 221, 0.15);
+  --acid: #d4ff3a;            /* 强调色：酸性黄绿 */
+  --signal: #ff5b3a;          /* 警示色：信号橙 */
+  --azure: #3aafff;           /* 辅助：电光蓝 */
+  --grid: rgba(232, 230, 221, 0.06);
+}
+
+/* -------- 重置 -------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+input { font-family: inherit; }
+
+/* -------- 字体工具类 -------- */
+.serif { font-family: 'Noto Serif SC', serif; }
+.display-en { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144; letter-spacing: -0.02em; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* -------- 网格背景 -------- */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* -------- 扫描线 -------- */
+.scanlines { position: relative; }
+.scanlines::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(212, 255, 58, 0.02) 0px,
+    rgba(212, 255, 58, 0.02) 1px,
+    transparent 1px, transparent 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* -------- 动画关键帧 -------- */
+@keyframes pulse-acid {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 255, 58, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(212, 255, 58, 0); }
+}
+
+@keyframes blink { 50% { opacity: 0.3; } }
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes ripple-anim {
+  from { width: 0; height: 0; opacity: 1; }
+  to { width: 600px; height: 600px; opacity: 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+/* -------- 通用元素 -------- */
+.pulse-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--acid);
+  animation: pulse-acid 1.5s infinite;
+}
+
+.signal-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+  animation: blink 1s infinite;
+}
+
+.glitch-hover:hover { animation: glitch 0.3s infinite; }
+
+.draw-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw 3s ease-out forwards;
+}
+
+.marquee-track { animation: marquee 40s linear infinite; }
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--acid);
+  animation: ripple-anim 1.2s ease-out forwards;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.fade-up { animation: fade-up 0.8s ease-out backwards; }
+
+/* -------- 容器 -------- */
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------- 顶部导航 -------- */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  background: rgba(13, 14, 10, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.site-header .container {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 40px; height: 40px;
+}
+
+.brand-text .display-en {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.brand-text .zh {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--paper-dim);
+  margin-top: 4px;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  position: relative;
+  transition: color 0.2s;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.nav-links a .zh-label {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.nav-links a .num {
+  color: var(--paper-dim);
+  font-size: 10px;
+}
+
+.nav-links a:hover { color: var(--acid); }
+.nav-links a.active { color: var(--acid); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--acid);
+  transition: width 0.3s;
+}
+.nav-links a:hover::after,
+.nav-links a.active::after { width: 100%; }
+
+.login-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(232, 230, 221, 0.3);
+  padding: 8px 16px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.login-btn:hover {
+  background: var(--acid);
+  color: var(--ink);
+  border-color: var(--acid);
+}
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+}
+
+/* -------- 区块标题 -------- */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  padding-bottom: 24px;
+}
+
+.section-header .num {
+  font-family: 'Fraunces', serif;
+  font-size: 56px;
+  color: var(--acid);
+  line-height: 1;
+}
+
+.section-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.section-header .subtitle-en {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--paper-dim);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* -------- 通用按钮 -------- */
+.btn-primary {
+  background: var(--acid);
+  color: var(--ink);
+  padding: 14px 24px;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  border: 1px solid var(--acid);
+}
+.btn-primary:hover {
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+.btn-ghost {
+  border: 1px solid rgba(232, 230, 221, 0.3);
+  color: var(--paper);
+  padding: 14px 24px;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  transition: all 0.2s;
+}
+.btn-ghost:hover {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+/* -------- 数据标签 -------- */
+.label-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+/* -------- 跑马灯 -------- */
+.marquee {
+  border-top: 1px solid rgba(232, 230, 221, 0.1);
+  border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  overflow: hidden;
+  background: var(--acid);
+  color: var(--ink);
+  padding: 18px 0;
+}
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.marquee-item {
+  margin: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.marquee-item .dim { opacity: 0.5; }
+
+/* -------- 跟随光标波形 -------- */
+#cursor-wave {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  width: 100vw;
+  height: 100vh;
+}
+@media (max-width: 768px) {
+  #cursor-wave { display: none; }
+}
+
+/* -------- 页脚 -------- */
+.site-footer {
+  border-top: 1px solid rgba(232, 230, 221, 0.1);
+  padding: 56px 0 32px;
+  margin-top: 64px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 32px;
+}
+.footer-grid h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+.footer-grid ul { list-style: none; font-size: 13px; }
+.footer-grid li { margin-bottom: 6px; }
+.footer-grid li a:hover { color: var(--acid); }
+.footer-bottom {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(232, 230, 221, 0.1);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(232, 230, 221, 0.4);
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; }
+}
+
+/* -------- 通用卡片 -------- */
+.card {
+  border: 1px solid rgba(232, 230, 221, 0.15);
+  background: var(--ink);
+  padding: 24px;
+  transition: all 0.3s;
+}
+.card:hover {
+  border-color: var(--acid);
+  background: var(--ink-2);
+}
+
+/* -------- 选中文字 -------- */
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+/* -------- 滚动条 -------- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: rgba(232, 230, 221, 0.2); }
+::-webkit-scrollbar-thumb:hover { background: var(--acid); }

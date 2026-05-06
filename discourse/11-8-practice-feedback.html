@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我录了一段 11/8 拍的练习，技术不行求批评 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero .crumbs a:hover { color: var(--acid); }
+
+  .thread-tag-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .thread-tag-pill.tech     { color: #d4ff3a; }
+  .thread-tag-pill.rec      { color: #67e8f9; }
+  .thread-tag-pill.debate   { color: #ff5b3a; }
+  .thread-tag-pill.share    { color: #f0abfc; }
+  .thread-tag-pill.live     { color: #fcd34d; }
+  .thread-tag-pill.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 920px;
+  }
+
+  .thread-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .thread-meta-bar .author { color: var(--acid); }
+  .thread-meta-bar .stat .num {
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ========== 帖子正文 ========== */
+  .thread-content-section {
+    padding: 64px 0;
+  }
+  .thread-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.9);
+  }
+  .thread-content p { margin-bottom: 20px; }
+  .thread-content h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(212, 255, 58, 0.2);
+    color: var(--paper);
+  }
+  .thread-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    color: var(--acid);
+  }
+  .thread-content strong { color: var(--acid); font-weight: 700; }
+  .thread-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .thread-content a {
+    color: var(--acid);
+    border-bottom: 1px solid rgba(212, 255, 58, 0.4);
+    transition: border-color 0.2s;
+  }
+  .thread-content a:hover { border-bottom-color: var(--acid); }
+  .thread-content ul, .thread-content ol {
+    padding-left: 28px;
+    margin-bottom: 20px;
+  }
+  .thread-content li { margin-bottom: 8px; }
+  .thread-content blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 12px 24px;
+    margin: 24px 0;
+    background: rgba(212, 255, 58, 0.04);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .thread-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+    border-radius: 2px;
+  }
+  .thread-content pre {
+    background: var(--ink-2);
+    border: 1px solid rgba(232, 230, 221, 0.1);
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .thread-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .thread-content table {
+    width: 100%;
+    margin: 24px 0;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .thread-content table th,
+  .thread-content table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .thread-content table th {
+    color: var(--acid);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 11px;
+  }
+  .thread-content hr {
+    border: 0;
+    border-top: 1px dashed rgba(232, 230, 221, 0.15);
+    margin: 36px 0;
+  }
+
+  /* ========== 样本回复 ========== */
+  .replies-section {
+    padding: 64px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .replies-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .replies-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .replies-header .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--signal);
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    text-transform: uppercase;
+  }
+  .replies-header .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+
+  .reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reply-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .reply-item { grid-template-columns: 180px 1fr; gap: 32px; }
+  }
+  .reply-item:last-child { border-bottom: 0; }
+  .reply-meta {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .reply-meta .author {
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .reply-meta .time {
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .reply-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .reply-body p { margin-bottom: 12px; }
+  .reply-body p:last-child { margin-bottom: 0; }
+  .reply-body strong { color: var(--acid); }
+  .reply-body em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .reply-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+  }
+  .reply-body blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 8px 18px;
+    margin: 12px 0;
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .reply-body ul, .reply-body ol { padding-left: 24px; }
+  .reply-body li { margin-bottom: 6px; }
+
+  /* ========== Cusdis 占位框 ========== */
+  .comments-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .comments-placeholder {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 48px 32px;
+    position: relative;
+  }
+  .comments-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .comments-placeholder .ph-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .comments-placeholder h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .comments-placeholder p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 580px;
+  }
+  .comments-placeholder p em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  /* ========== 返回导航 ========== */
+  .back-nav {
+    padding: 32px 0 64px;
+    text-align: center;
+  }
+  .back-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    transition: color 0.2s;
+    padding: 12px 24px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .back-nav a:hover {
+    color: var(--acid);
+    border-color: var(--acid);
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="../index.html">首页 / Index</a> &nbsp;/&nbsp;
+      <a href="../discourse.html">讨论 / Discourse</a> &nbsp;/&nbsp;
+      <span style="color: var(--acid);">11-8-practice-feedback</span>
+    </div>
+    <span class="thread-tag-pill share">作品</span>
+    <h1 class="thread-title">我录了一段 11/8 拍的练习，技术不行求批评</h1>
+    <div class="thread-meta-bar">
+      <span class="author">LISTENER #2E89</span>
+      <span>2026-04-29 · 昨天 14:32</span>
+      <span class="stat"><span class="num">      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #7B19</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>毒舌一下：<strong>问题不在节奏，在动态</strong>。你整段都是同一个力度在弹，所以才听起来像练习题。Don Caballero 的"咬合感"很大程度来自<strong>重音放置</strong>——3+2+3+3 这个分组里，第 1、4、6、9 拍是天然的重音点，但你弹得几乎一样响。</p>
+<p>建议：把强拍<strong>狠狠地</strong>弹下去，把弱拍<strong>有意识地</strong>收着。这一招你做到，你就听起来像 Damon Che（即使技术还差很远）。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6F44</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>+1 楼上。补充：左手第 4 弦弱的问题不是力度，是<strong>手指角度</strong>。你大概在用手指尖偏下方按弦，导致第 4 弦没被压实。</p>
+<p>试着把手腕略微抬起来，让手指更"立"一点。或者干脆把第 4 弦的拨弦换成右手的中指，避开按弦不稳的问题。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #5C71</div>
+          <div class="time">12 小时前</div>
+        </div>
+        <div class="reply-body"><p>其实你这个 demo 已经比大多数 <em>自称数摇</em> 的二人乐队首作要好了。我听到的最大问题不是技术，是<strong>编曲缺乏对位</strong>。Don Caballero 的特征是 <em>两条独立的旋律线同时跑</em>，你的 demo 只有一条主旋律 + 节奏铺垫。</p>
+<p>建议下一版尝试加入一条"反向旋律"——在主旋律往上跑的时候让低音往下走，制造紧张感。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #4D52</div>
+          <div class="time">10 小时前</div>
+        </div>
+        <div class="reply-body"><p>iPhone 内录其实没你想的那么差，我听到的"不饱满"主要是<strong>距离过近</strong>导致的低频堆积 + 缺少房间反射。下次试试把手机放在 <em>离吉他 1 米</em> 的位置，找一个有点回声的房间（厨房或楼梯间）。同样的 take 听起来会立刻"厚" 50%。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #2E89</div>
+          <div class="time">8 小时前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>感谢所有人的批评，这种 quality 的反馈真的难得。</p>
+<p>准备这个周末重录一版，把建议都整合进去：</p>
+<ol>
+<li>重音狠下去、弱拍收着（@LISTENER #7B19）</li>
+<li>改手指角度（@LISTENER #6F44）</li>
+<li>加对位旋律线（@OBSERVER #5C71）</li>
+<li>麦克风距离拉远到 1 米（@LISTENER #4D52）</li>
+</ol>
+<p>下周发新版。求继续批评。</p></div>
+      </div></span> 回复</span>
+      <span class="stat"><span class="num">156</span> 浏览</span>
+    </div>
+  </div>
+</section>
+
+<section class="thread-content-section">
+  <div class="container">
+    <article class="thread-content">
+<p>玩了两年吉他，最近开始尝试不规则拍号。这段是 <strong>11/8 拍（3+2+3+3 分组）</strong> 的练习曲，受 Don Caballero 影响很重。</p>
+<p>录音环境：iPhone 直接对着箱琴录的，凑合听。</p>
+<blockquote>
+<p>[SoundCloud 链接 - soundcloud.com/listener-2e89/poly-11-8-attempt-1]</p>
+</blockquote>
+<hr />
+<h2>我自己听到的问题</h2>
+<ol>
+<li><strong>节奏不稳</strong> —— 在 3+2 → 3+3 的切换点（每小节大概 2/3 处）容易抢拍。听感上像"急刹车"，但应该更圆滑。</li>
+<li><strong>左手按弦力度</strong> —— 第二段的快速跑动里，第 4 弦的按压声音明显比其他弦弱。手指力量问题？</li>
+<li><strong>整体没有"呼吸感"</strong> —— 听起来像在 <em>演奏练习题</em>，而不是在 <em>讲故事</em>。这才是最让我难受的。</li>
+</ol>
+<p>求毒舌批评，不要客气。我已经做好心理准备了。</p>
+<hr />
+<h2>设备清单（如果有用）</h2>
+<ul>
+<li><strong>吉他</strong>：二手 Telecaster (墨产，约¥4500)</li>
+<li><strong>效果器</strong>：无（直接进 audio interface）</li>
+<li><strong>录音</strong>：iPhone 13 内置话筒 + 距吉他约 30cm</li>
+<li><strong>DAW</strong>：GarageBand（基本只用来切片）</li>
+</ul>
+<hr />
+<h2>我想去的方向</h2>
+<p><strong>Don Caballero《Stupid Puma》</strong> 那种"鼓和吉他像两台不同的机器在同时运转，但每隔几小节会突然咬合"的感觉。我现在的版本 <em>咬合点找不到</em>，整体更像在自言自语。</p>
+<p>请大家给点建议——技术上、编曲上、心态上都行。</p>
+    </article>
+  </div>
+</section>
+
+<section class="replies-section">
+  <div class="container">
+    <div class="replies-header">
+      <h2>样本回复</h2>
+      <span class="badge">▲ FIXTURE · 虚构</span>
+      <span class="count">5 replies</span>
+    </div>
+    <div class="reply-list">
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #7B19</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>毒舌一下：<strong>问题不在节奏，在动态</strong>。你整段都是同一个力度在弹，所以才听起来像练习题。Don Caballero 的"咬合感"很大程度来自<strong>重音放置</strong>——3+2+3+3 这个分组里，第 1、4、6、9 拍是天然的重音点，但你弹得几乎一样响。</p>
+<p>建议：把强拍<strong>狠狠地</strong>弹下去，把弱拍<strong>有意识地</strong>收着。这一招你做到，你就听起来像 Damon Che（即使技术还差很远）。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6F44</div>
+          <div class="time">昨天</div>
+        </div>
+        <div class="reply-body"><p>+1 楼上。补充：左手第 4 弦弱的问题不是力度，是<strong>手指角度</strong>。你大概在用手指尖偏下方按弦，导致第 4 弦没被压实。</p>
+<p>试着把手腕略微抬起来，让手指更"立"一点。或者干脆把第 4 弦的拨弦换成右手的中指，避开按弦不稳的问题。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #5C71</div>
+          <div class="time">12 小时前</div>
+        </div>
+        <div class="reply-body"><p>其实你这个 demo 已经比大多数 <em>自称数摇</em> 的二人乐队首作要好了。我听到的最大问题不是技术，是<strong>编曲缺乏对位</strong>。Don Caballero 的特征是 <em>两条独立的旋律线同时跑</em>，你的 demo 只有一条主旋律 + 节奏铺垫。</p>
+<p>建议下一版尝试加入一条"反向旋律"——在主旋律往上跑的时候让低音往下走，制造紧张感。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #4D52</div>
+          <div class="time">10 小时前</div>
+        </div>
+        <div class="reply-body"><p>iPhone 内录其实没你想的那么差，我听到的"不饱满"主要是<strong>距离过近</strong>导致的低频堆积 + 缺少房间反射。下次试试把手机放在 <em>离吉他 1 米</em> 的位置，找一个有点回声的房间（厨房或楼梯间）。同样的 take 听起来会立刻"厚" 50%。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #2E89</div>
+          <div class="time">8 小时前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>感谢所有人的批评，这种 quality 的反馈真的难得。</p>
+<p>准备这个周末重录一版，把建议都整合进去：</p>
+<ol>
+<li>重音狠下去、弱拍收着（@LISTENER #7B19）</li>
+<li>改手指角度（@LISTENER #6F44）</li>
+<li>加对位旋律线（@OBSERVER #5C71）</li>
+<li>麦克风距离拉远到 1 米（@LISTENER #4D52）</li>
+</ol>
+<p>下周发新版。求继续批评。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <div class="container">
+    <div class="comments-placeholder">
+      <div class="ph-label">
+
+      <!--
+        ====================================================================
+        FUTURE INTEGRATION · 未来部署 Cusdis 时的接入指南
+        ====================================================================
+
+        步骤 1: fork https://github.com/djyde/cusdis 部署到 Vercel
+        步骤 2: 配置 Vercel Postgres 数据库
+        步骤 3: 拿到你的 host URL 和 app_id
+        步骤 4: 把下面这段代码取消注释、替换占位符即可
+
+        <div id="cusdis_thread"
+             data-host="https://你的cusdis域名.vercel.app"
+             data-app-id="你的-app-id-uuid"
+             data-page-id="thread-006"
+             data-page-url="https://你的网站域名/discourse/11-8-practice-feedback.html"
+             data-page-title="我录了一段 11/8 拍的练习，技术不行求批评">
+        </div>
+        <script async defer src="https://你的cusdis域名.vercel.app/js/cusdis.es.js"></script>
+
+        ====================================================================
+      -->
+    </div>
+  </div>
+</section>
+
+<section class="back-nav">
+  <div class="container">
+    <a href="../discourse.html">← 返回讨论列表</a>
+  </div>
+</section>
+
+<script src="../shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+</script>
+
+</body>
+</html>

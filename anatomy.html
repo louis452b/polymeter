@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技术 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 64px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .page-hero h1 .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.32em;
+    color: var(--paper-dim);
+    margin-top: 0.4em;
+  }
+  .page-hero .lead {
+    margin-top: 32px;
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+
+  /* ========== 拍号比较 ========== */
+  .meter-section { padding: 96px 0; }
+  .meter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 64px;
+  }
+  @media (min-width: 1024px) { .meter-grid { grid-template-columns: 4fr 8fr; } }
+  .meter-list { display: flex; flex-direction: column; gap: 8px; }
+  .meter-list-item {
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .meter-list-item.active {
+    border-color: var(--acid);
+    background: rgba(212, 255, 58, 0.05);
+    color: var(--acid);
+  }
+  .meter-list-item:not(.active):hover { border-color: rgba(232, 230, 221, 0.4); }
+  .meter-list-item .left { display: flex; align-items: baseline; gap: 14px; }
+  .meter-list-item .name-en { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; }
+  .meter-list-item .name-zh { font-family: 'Noto Serif SC', serif; font-weight: 500; font-size: 14px; }
+  .meter-list-item .desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--paper-dim);
+    margin-top: 4px;
+  }
+  .meter-list-item.active .desc { color: var(--acid); opacity: 0.7; }
+
+  .meter-viz {
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 32px;
+  }
+  .meter-viz-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .meter-cells { display: grid; gap: 6px; margin-bottom: 28px; }
+  .meter-cell {
+    aspect-ratio: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    transition: all 0.1s;
+  }
+  .meter-cell.accent { border-color: var(--acid); background: rgba(212, 255, 58, 0.08); }
+  .meter-cell.active { background: var(--acid) !important; transform: scale(1.08); }
+  .meter-cell .marker { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: rgba(232, 230, 221, 0.4); }
+  .meter-cell.accent .marker { color: var(--acid); }
+  .meter-cell.active .marker { color: var(--ink); }
+  .meter-cell .num {
+    position: absolute; top: 4px; left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(232, 230, 221, 0.3);
+  }
+  .meter-cell.accent .num { color: var(--acid); }
+  .meter-cell.active .num { color: var(--ink); }
+
+  .meter-bars { display: flex; gap: 4px; margin: 24px 0; height: 60px; }
+  .meter-bar {
+    flex: 1;
+    background: linear-gradient(to top, rgba(232,230,221,0.15) 0%, rgba(232,230,221,0.15) 30%, transparent 100%);
+  }
+  .meter-bar.accent {
+    background: linear-gradient(to top, var(--acid) 0%, var(--acid) 80%, transparent 100%);
+  }
+
+  .meter-explanation {
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    padding-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+  }
+  .meter-explanation .acid { color: var(--acid); }
+  .meter-explanation .zh-note {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    margin-top: 12px;
+    color: var(--paper);
+  }
+
+  /* ========== 复节奏 ========== */
+  .poly-section {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .poly-explanation {
+    margin-top: 56px;
+    max-width: 880px;
+    font-size: 16px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .poly-explanation p { margin-bottom: 14px; }
+  .poly-explanation strong { color: var(--acid); }
+  .poly-explanation em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  .poly-viz {
+    margin-top: 48px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    background: var(--ink);
+    padding: 32px;
+  }
+  .poly-viz-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .poly-track {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .poly-track-label {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .poly-track-label .en {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--paper-dim);
+    margin-top: 2px;
+  }
+  .poly-cells {
+    display: grid;
+    gap: 3px;
+    grid-template-columns: repeat(24, 1fr);
+    height: 32px;
+  }
+  .poly-cell {
+    background: rgba(232, 230, 221, 0.08);
+    transition: all 0.1s;
+  }
+  .poly-cell.beat { background: rgba(212, 255, 58, 0.4); }
+  .poly-cell.beat.active { background: var(--acid); transform: scaleY(1.3); }
+  .poly-cell.beat-2 { background: rgba(255, 91, 58, 0.4); }
+  .poly-cell.beat-2.active { background: var(--signal); transform: scaleY(1.3); }
+  .poly-controls {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .poly-btn {
+    padding: 10px 16px;
+    border: 1px solid rgba(232, 230, 221, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper);
+    transition: all 0.2s;
+  }
+  .poly-btn.active {
+    background: var(--acid);
+    color: var(--ink);
+    border-color: var(--acid);
+  }
+  .poly-btn:not(.active):hover { border-color: var(--acid); color: var(--acid); }
+
+  /* ========== 演奏技法 ========== */
+  .tech-section {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .tech-grid {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: rgba(232, 230, 221, 0.1);
+  }
+  @media (min-width: 768px) { .tech-grid { grid-template-columns: 1fr 1fr; } }
+  .tech-card {
+    background: var(--ink);
+    padding: 40px 32px;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .tech-card:hover { background: #000; }
+  .tech-card .num {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--acid);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .tech-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .tech-card .en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--paper-dim);
+    margin-top: 6px;
+    margin-bottom: 24px;
+  }
+  .tech-card .desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.75);
+  }
+  .tech-card .desc p { margin-bottom: 12px; }
+  .tech-card .desc strong { color: var(--acid); }
+  .tech-card .desc em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .tech-card .practitioners {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .tech-card .practitioners .label { color: var(--acid); }
+
+  /* ========== 音色与器材 ========== */
+  .gear-section {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .gear-table {
+    margin-top: 56px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .gear-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 220px;
+    gap: 24px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    align-items: baseline;
+  }
+  .gear-row:last-child { border-bottom: 0; }
+  .gear-row.header {
+    background: rgba(212, 255, 58, 0.05);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+  }
+  .gear-row .item {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .gear-row .item .en {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .gear-row .why {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.75);
+  }
+  .gear-row .why em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .gear-row .examples {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    line-height: 1.7;
+  }
+  @media (max-width: 900px) {
+    .gear-row { grid-template-columns: 1fr; gap: 8px; }
+    .gear-row.header { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 页面 Hero ========== -->
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="index.html">首页 / Index</a> &nbsp;/&nbsp; <span style="color: var(--acid);">技术 / Method</span>
+    </div>
+    <h1>
+      技术 · 解剖
+      <span class="en">— the method of math rock</span>
+    </h1>
+    <p class="lead">
+      把数学摇滚摆上解剖台，逐层拆解。这一章包含四个角度：<strong style="color: var(--acid);">拍号</strong>（节奏的骨架）、<strong style="color: var(--acid);">复节奏</strong>（多线并行）、<strong style="color: var(--acid);"></strong><strong style="color: var(--acid);">音色与器材</strong>（声音从哪里来）。
+    </p>
+  </div>
+</section>
+
+<!-- ========== 拍号比较 ========== -->
+<section class="meter-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">01</span>
+      <div>
+        <h2>四种常见拍号</h2>
+        <div class="subtitle-en">Four common meters, side by side</div>
+      </div>
+    </div>
+
+    <div class="meter-grid">
+      <div class="meter-list" id="meter-list"></div>
+      <div class="meter-viz" id="meter-viz"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 复节奏图解 ========== -->
+<section class="poly-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">02</span>
+      <div>
+        <h2>复节奏图解</h2>
+        <div class="subtitle-en">Polyrhythm visualized · two pulses, one body</div>
+      </div>
+    </div>
+
+    <div class="poly-explanation">
+      <p><strong>复节奏（Polyrhythm）</strong>是数学摇滚的核心思维之一。它指的是：在同一段时间内，<em>两个声部按不同的分组打拍</em>——比如吉他每 3 拍循环、鼓每 4 拍循环。两条声部各跑各的，只在特定时刻"对齐"。</p>
+      <p>下面这个面板可视化了几种最常见的复节奏类型。<strong>黄色</strong>是声部 A、<strong>橙色</strong>是声部 B，每一格代表一个最小时间单位。注意听两条声部如何错开、又如何在某些瞬间汇合——这就是数学摇滚"齿轮咬合"感的来源。</p>
+    </div>
+
+    <div class="poly-viz">
+      <div class="poly-viz-header">
+        <span>POLYRHYTHM ANALYZER · CH-02</span>
+        <span id="poly-name">3 : 4</span>
+        <span style="display: flex; align-items: center; gap: 6px;"><span class="signal-dot"></span>LIVE</span>
+      </div>
+
+      <div class="poly-track">
+        <div class="poly-track-label">声部 A<span class="en">VOICE A</span></div>
+        <div class="poly-cells" id="poly-a"></div>
+      </div>
+      <div class="poly-track">
+        <div class="poly-track-label">声部 B<span class="en">VOICE B</span></div>
+        <div class="poly-cells" id="poly-b"></div>
+      </div>
+
+      <div class="poly-controls" id="poly-controls"></div>
+    </div>
+
+    <div class="poly-explanation" style="margin-top: 48px;">
+      <p><strong>常见的复节奏组合</strong>：</p>
+      <p><strong>3:2</strong>（半音符三连音）—— 最古老、最常见。三拍均匀地落在两拍的时间里。其实这在所有西方音乐中都存在，只是数摇把它变成了主角。</p>
+      <p><strong>3:4</strong>（伪希米奥拉）—— 三拍循环对四拍循环。每 12 个最小单位才完整重合一次，听起来像两个互相抗衡的旋律线。</p>
+      <p><strong>5:4 与 7:4</strong>（更进阶）—— 数摇里 Don Caballero、Battles 的招牌。你会"知道"循环存在，但永远数不清它什么时候回来。</p>
+      <p><strong>复拍号 vs 复节奏</strong>：复节奏是<em>同一小节内</em>的并行；复拍号（polymeter）则是<em>整个小节长度都不同</em>——比如吉他在 7/8、鼓在 4/4，每 28 个单位重合一次。听感差别很大，但常被混用。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 演奏技法 ========== -->
+
+
+<!-- ========== 音色与器材 ========== -->
+<section class="gear-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">03</span>
+      <div>
+        <h2>音色与器材</h2>
+        <div class="subtitle-en">Tone & gear · the sound's source</div>
+      </div>
+    </div>
+
+    <div class="poly-explanation">
+      <p>数学摇滚的<em>声音</em>本身就是一种声明。这份不完整的清单列出了流派中常见的器材选择和它们的"为什么"——理解这些，你就能听出某个段落是哪类乐手做的。</p>
+    </div>
+
+    <div class="gear-table">
+      <div class="gear-row header">
+        <span>器材类型</span>
+        <span>选择理由</span>
+        <span>典型代表</span>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">空心箱琴 / 半空心吉他<span class="en">hollow / semi-hollow guitar</span></div>
+        <div class="why">提供清亮、有"木头味"的清音，适合琶音织体。比实心吉他更<em>温暖</em>，但延音稍短。</div>
+        <div class="examples">Fender Telecaster<br>Gibson ES-335<br>Rickenbacker 360</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">开放调弦<span class="en">open tunings</span></div>
+        <div class="why">把吉他六根弦调成一个和弦（如 DADGAD、Open D），让点弦时不需要按和弦也能奏响和声。American Football 几乎所有歌都使用开放调弦。</div>
+        <div class="examples">DADGAD<br>FACGCE<br>Drop D / Open G</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">压缩器<span class="en">compressor pedal</span></div>
+        <div class="why">把每一个音符的音量拉平。点弦时手指力度会不均，压缩器把弱音抬起来、强音压下去，让快速跑动听起来<em>丝滑</em>。</div>
+        <div class="examples">Keeley Compressor Plus<br>Origin Effects Cali76<br>Wampler Ego</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">延迟与混响<span class="en">delay & reverb</span></div>
+        <div class="why">给清音增添空间感。数摇用的延迟通常很<em>克制</em>——只为填补音符之间的间隙，不是制造迷幻效果。</div>
+        <div class="examples">Strymon Timeline<br>Eventide H9<br>Boss DD-200</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">循环器<span class="en">looper pedal</span></div>
+        <div class="why">让一个吉他手听起来像两个。Giraffes? Giraffes! 与 toe 大量使用循环器搭建织体——先录一层、再叠一层、最后即兴在上面演奏。</div>
+        <div class="examples">Boss RC-505<br>Strymon Volante<br>Headrush Looperboard</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">异形拍号鼓机思维<span class="en">odd-meter drumming</span></div>
+        <div class="why">数摇鼓手训练自己以非 4/4 的"内部脉冲"思考。常见做法：把脚踩 quarter note 当骨架，手在上面打不规则切分。</div>
+        <div class="examples">Damon Che（Don Caballero）<br>Greg Saunier（Deerhoof）<br>柏木幸（toe）</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">钢琴 / 电钢<span class="en">piano / Rhodes</span></div>
+        <div class="why">日本数摇与后摇交叉的支线大量使用钢琴——toe、mouse on the keys 把它当作第二把"旋律乐器"，与吉他对位。</div>
+        <div class="examples">Fender Rhodes<br>Wurlitzer 200A<br>原声三角钢琴</div>
+      </div>
+
+      <div class="gear-row">
+        <div class="item">不要太多失真<span class="en">avoid heavy distortion</span></div>
+        <div class="why">这是个"反器材"的选择。失真会糊掉复杂的节奏与多声部纹理。当代数摇即使用失真也通常是<em>轻度过载</em>（mild overdrive），保留每个音符的清晰度。</div>
+        <div class="examples">Klon Centaur 系<br>Tube Screamer<br>Fulltone OCD（轻度）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="shared/core.js"></script>
+<script>
+  initPage('anatomy.html');
+
+  // ========== 拍号比较 ==========
+  (function() {
+    let active = 1;
+    const meters = window.METERS;
+    const listEl = document.getElementById('meter-list');
+    const vizEl = document.getElementById('meter-viz');
+
+    function renderList() {
+      listEl.innerHTML = meters.map((m, i) => `
+        <button class="meter-list-item ${i === active ? 'active' : ''}" data-i="${i}">
+          <div>
+            <div class="left">
+              <span class="name-en">${m.name}</span>
+              <span class="name-zh">${m.zh}</span>
+            </div>
+            <div class="desc">${m.desc}</div>
+          </div>
+          <span>${i === active ? '■' : '▶'}</span>
+        </button>
+      `).join('');
+      listEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          active = parseInt(btn.dataset.i);
+          renderList();
+          renderViz();
+        });
+      });
+    }
+
+    function renderViz() {
+      const m = meters[active];
+      const cellsTemplate = `repeat(${m.beats.length}, 1fr)`;
+      const groupSizes = [];
+      for (let i = 0; i < m.accent.length; i++) {
+        const next = m.accent[i + 1] || m.beats.length;
+        groupSizes.push(next - m.accent[i]);
+      }
+
+      vizEl.innerHTML = `
+        <div class="meter-viz-header">
+          <span>SIGNATURE: ${m.name}</span>
+          <span>${m.zh} · ${m.beats.length} 个细分</span>
+        </div>
+        <div class="meter-cells" id="meter-cells" style="grid-template-columns: ${cellsTemplate};">
+          ${m.beats.map((b, i) => `
+            <div class="meter-cell ${m.accent.includes(i) ? 'accent' : ''}" data-i="${i}">
+              <span class="num">${i+1}</span>
+              <span class="marker">${b ? '●' : '○'}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="label-mono" style="margin-bottom: 8px;">重音模式 · accent pattern</div>
+        <div class="meter-bars">
+          ${m.beats.map((_, i) => `<div class="meter-bar ${m.accent.includes(i) ? 'accent' : ''}"></div>`).join('')}
+        </div>
+        <div class="meter-explanation">
+          <span class="acid">// </span>读作："${groupSizes.join(' + ')}" — 整个小节被切分成不等长的几组，这就是为什么你的脚没办法稳稳跟着踩。
+          <div class="zh-note">${
+            m.name === '4/4' ? '最常见的拍号——重音落在第 1 和第 5 个细分上，"咚-嗒-咚-嗒"。流行乐和大多数摇滚都建立在这个基础上。' :
+            m.name === '7/8' ? '七八拍 = 3+2+2 或 2+2+3。每一小节比标准短一拍，让音乐总有种"急刹车"的悬念感。' :
+            m.name === '5/4' ? '由 Dave Brubeck《Take Five》普及。拆成 3+2 或 2+3，节奏总在你以为它要落下时悄悄延后。' :
+            '十一八拍 = 3+2+3+3 或类似分组。这是数学摇滚最深的领域——必须靠数数才能演奏，听众也只能"感觉"它的循环点。'
+          }</div>
+        </div>
+      `;
+
+      const cellEls = vizEl.querySelectorAll('.meter-cell');
+      window.subscribeTick((tick) => {
+        const idx = Math.floor(tick * 0.15) % m.beats.length;
+        cellEls.forEach((c, i) => c.classList.toggle('active', i === idx));
+      });
+    }
+
+    renderList();
+    renderViz();
+  })();
+
+  // ========== 复节奏图解 ==========
+  (function() {
+    const PATTERNS = [
+      { name: '3 : 2', a: 3, b: 2, desc: '半音符三连音 · 最基本' },
+      { name: '3 : 4', a: 3, b: 4, desc: '伪希米奥拉 · 错位感' },
+      { name: '5 : 4', a: 5, b: 4, desc: '进阶 · 数摇常用' },
+      { name: '7 : 4', a: 7, b: 4, desc: 'Don Caballero 招牌' },
+    ];
+    let activeP = 1;
+    const TOTAL = 24;
+
+    const aEl = document.getElementById('poly-a');
+    const bEl = document.getElementById('poly-b');
+    const ctrlEl = document.getElementById('poly-controls');
+    const nameEl = document.getElementById('poly-name');
+
+    function render() {
+      const p = PATTERNS[activeP];
+      const stepA = TOTAL / p.a;
+      const stepB = TOTAL / p.b;
+
+      let aHTML = '';
+      for (let i = 0; i < TOTAL; i++) {
+        const isBeat = (i % stepA === 0);
+        aHTML += `<div class="poly-cell ${isBeat ? 'beat' : ''}" data-i="${i}"></div>`;
+      }
+      aEl.innerHTML = aHTML;
+
+      let bHTML = '';
+      for (let i = 0; i < TOTAL; i++) {
+        const isBeat = (i % stepB === 0);
+        bHTML += `<div class="poly-cell ${isBeat ? 'beat-2' : ''}" data-i="${i}"></div>`;
+      }
+      bEl.innerHTML = bHTML;
+
+      nameEl.textContent = `${p.name}  ·  ${p.desc}`;
+    }
+
+    ctrlEl.innerHTML = PATTERNS.map((p, i) =>
+      `<button class="poly-btn ${i === activeP ? 'active' : ''}" data-i="${i}">${p.name}</button>`
+    ).join('');
+    ctrlEl.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeP = parseInt(btn.dataset.i);
+        ctrlEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render();
+      });
+    });
+    render();
+
+    window.subscribeTick((tick) => {
+      const cur = Math.floor(tick * 0.2) % TOTAL;
+      const aBeats = aEl.querySelectorAll('.poly-cell.beat');
+      const bBeats = bEl.querySelectorAll('.poly-cell.beat-2');
+      aBeats.forEach(c => c.classList.toggle('active', parseInt(c.dataset.i) === cur));
+      bBeats.forEach(c => c.classList.toggle('active', parseInt(c.dataset.i) === cur));
+    });
+  })();
+
+  // ========== 演奏技法 ==========
+  (function() {
+    const techs = [
+      {
+        num: '03.01',
+        zh: '双手点弦',
+        en: 'Two-Hand Tapping',
+        desc: `
+          <p>左右两只手都在指板上"敲击"琴弦——通过<strong>点击</strong>而不是拨动来发声。结果是钢琴般的清亮音色与高密度音符。</p>
+          <p>分两个流派：<em>Eddie Van Halen 派</em>（独奏炫技）vs <em>数摇派</em>（用来构筑全曲织体）。后者的代表是 American Football 的 Mike Kinsella —— 他用点弦演奏整段琶音，而不是穿插在主旋律里。</p>
+          <p>当代发展：Standards 的 Marcos Mena 把点弦推到极限，<strong>用一把吉他同时打出贝斯线和主旋律</strong>——左手低音、右手高音，互相不打架。</p>
+        `,
+        practitioners: 'Mike Kinsella · Mario Camarena · Marcos Mena · Yvette Young'
+      },
+      {
+        num: '03.02',
+        zh: '清音琶音',
+        en: 'Clean Arpeggios',
+        desc: `
+          <p>不用失真效果器、不用拨片扫弦——而是用手指逐根拨动每根琴弦，让和弦的每一个音都<em>独立可听</em>。这是数摇与流行摇滚最直观的音色差别。</p>
+          <p>美式数摇（American Football、TTNG）的琶音通常配合<strong>开放调弦</strong>，让 1-2 个手指就能按出复杂和弦。日式数摇（toe）则更倾向爵士影响，用半减和弦、九和弦增加色彩。</p>
+        `,
+        practitioners: 'Steve Lamos · Tim Collis · Toe · Mineral'
+      },
+      {
+        num: '03.03',
+        zh: '指拨与混合拨弦',
+        en: 'Fingerpicking / Hybrid Picking',
+        desc: `
+          <p>"混合拨弦"指<em>拨片夹在拇食指间，中指无名指同时拨弦</em>——这样能在同一时间触及不相邻的弦，演奏复杂的多声部。</p>
+          <p>这个技术从 Chet Atkins、country 吉他借来，但数摇用它来打开"和弦内的旋律"——让低音、和声、主旋律分别由不同手指负责。</p>
+        `,
+        practitioners: 'Mike Kinsella · Steve Lamos · Toe · Maps & Atlases'
+      },
+      {
+        num: '03.04',
+        zh: '不规则鼓点',
+        en: 'Odd-Meter Drumming',
+        desc: `
+          <p>数摇鼓手不只是"数到 7"。他们训练自己以<em>不对称的内部脉冲</em>思考——比如把 7/8 拍想成 "强-弱-弱-强-弱-强-弱"，让强拍的位置本身成为旋律。</p>
+          <p>常见做法：<strong>脚踩稳定节拍</strong>当作骨架（一般是四分音符），<strong>手在上面打切分</strong>——这样即使手部节奏极复杂，整体仍然有"行进感"。</p>
+          <p>Don Caballero 的 Damon Che 是这套技术的祖师——他的鼓 fill 经常跨越好几个不规则拍，回到下一个小节的强拍上。</p>
+        `,
+        practitioners: 'Damon Che · 柏木幸 (toe) · Greg Saunier · 雪平瞬 (LITE)'
+      },
+      {
+        num: '03.05',
+        zh: '循环器搭建',
+        en: 'Live Looping',
+        desc: `
+          <p>对于二人乐队（Giraffes? Giraffes!、Standards、Floral）来说，循环器（looper pedal）是必备工具。先<strong>录一层 riff</strong>，让它无限循环，然后在上面叠加第二层、第三层。</p>
+          <p>关键是<em>第一层必须完美</em>——一旦录进 looper 里就改不了，整首歌都会建立在它的错误之上。这要求乐手对自己演奏的每一拍都有绝对把握。</p>
+        `,
+        practitioners: 'Joe Andreoli (G?G!) · El Ten Eleven · Toe (现场)'
+      },
+      {
+        num: '03.06',
+        zh: '突变换段',
+        en: 'Abrupt Transitions',
+        desc: `
+          <p>这不是"演奏"技法，而是<em>编曲</em>技法。数摇拒绝"过渡段"——一段安静的清音琶音突然被失真墙打断，再瞬间回到静谧。从 Slint《Spiderland》开始，这种"剪辑感"成为流派标志。</p>
+          <p>当代数摇把这种突变内化为<em>更细的颗粒</em>：每隔 4-8 小节就完全换一个音乐想法，像电影剪辑般跳跃。听众的注意力被持续重置，永远无法预测下一秒。</p>
+        `,
+        practitioners: 'Slint · Don Caballero · Battles · black midi'
+      },
+    ];
+
+    document.getElementById('tech-grid').innerHTML = techs.map(t => `
+      <div class="tech-card">
+        <div class="num">${t.num}</div>
+        <h3>${t.zh}</h3>
+        <div class="en">${t.en}</div>
+        <div class="desc">${t.desc}</div>
+        <div class="practitioners"><span class="label">代表演奏者 · </span>${t.practitioners}</div>
+      </div>
+    `).join('');
+  })();
+</script>
+
+</body>
+</html>

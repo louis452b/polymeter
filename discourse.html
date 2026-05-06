@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>讨论 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 64px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .page-hero h1 .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.32em;
+    color: var(--paper-dim);
+    margin-top: 0.4em;
+  }
+  .page-hero .lead {
+    margin-top: 32px;
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .page-hero .lead strong { color: var(--acid); }
+
+  /* ========== 信号接收面板 ========== */
+  .signal-panel {
+    margin-top: 56px;
+    border: 1px solid rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  @media (min-width: 768px) {
+    .signal-panel { grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; }
+  }
+  .signal-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+  }
+  .signal-status .dot {
+    width: 8px; height: 8px;
+    background: var(--acid);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--acid); }
+    50% { opacity: 0.4; box-shadow: 0 0 0 var(--acid); }
+  }
+  .signal-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 11px;
+    color: rgba(232, 230, 221, 0.7);
+  }
+  .signal-readout .item .label { color: var(--paper-dim); margin-right: 6px; }
+  .signal-readout .item .value { color: var(--acid); font-weight: 700; }
+  .signal-bars {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 24px;
+  }
+  .signal-bars .bar {
+    width: 3px;
+    background: var(--acid);
+    transition: height 0.3s;
+  }
+
+  /* ========== 分类筛选 ========== */
+  .filter-section {
+    padding: 56px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .filter-bar .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-right: 12px;
+  }
+  .filter-btn {
+    padding: 8px 14px;
+    border: 1px solid rgba(232, 230, 221, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--paper);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-btn:hover { border-color: var(--acid); color: var(--acid); }
+  .filter-btn.active {
+    background: var(--acid);
+    color: var(--ink);
+    border-color: var(--acid);
+  }
+  .filter-btn .count {
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  /* ========== 帖子列表 ========== */
+  .threads-section { padding: 32px 0 96px; }
+  .thread-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(232, 230, 221, 0.08);
+    border: 1px solid rgba(232, 230, 221, 0.08);
+  }
+  .thread-card {
+    background: var(--ink);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .thread-card { grid-template-columns: 80px 1fr 180px; gap: 24px; align-items: flex-start; }
+  }
+  .thread-card:hover {
+    background: var(--ink-2);
+    border-left: 2px solid var(--acid);
+    padding-left: 26px;
+  }
+  .thread-card.has-detail {
+    text-decoration: none;
+    color: inherit;
+    display: grid;
+  }
+  .thread-card.no-detail {
+    opacity: 0.85;
+  }
+  .thread-card.no-detail:hover {
+    opacity: 1;
+  }
+  .thread-archived-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    background: var(--acid);
+    vertical-align: middle;
+  }
+  .thread-card.pinned {
+    background: rgba(212, 255, 58, 0.03);
+  }
+  .thread-card.pinned::before {
+    content: 'PINNED';
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--acid);
+  }
+
+  .thread-meta-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .thread-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.1em;
+  }
+  .thread-time .relative { color: var(--acid); }
+  .thread-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(232, 230, 221, 0.4);
+    letter-spacing: 0.15em;
+  }
+
+  .thread-body { min-width: 0; }
+  .thread-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .thread-tag.tech     { color: #d4ff3a; }
+  .thread-tag.rec      { color: #67e8f9; }
+  .thread-tag.debate   { color: #ff5b3a; }
+  .thread-tag.share    { color: #f0abfc; }
+  .thread-tag.live     { color: #fcd34d; }
+  .thread-tag.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--paper);
+    margin-bottom: 8px;
+  }
+  .thread-card:hover .thread-title { color: var(--acid); }
+  .thread-excerpt {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.6);
+    margin-bottom: 12px;
+  }
+  .thread-author {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .thread-author .listener { color: var(--acid); }
+
+  .thread-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    border-left: 1px solid rgba(232, 230, 221, 0.08);
+    padding-left: 24px;
+  }
+  @media (max-width: 768px) {
+    .thread-stats { border-left: 0; padding-left: 0; flex-direction: row; gap: 24px; }
+  }
+  .thread-stats .stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(232, 230, 221, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .thread-stats .stat .num {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--paper);
+  }
+  .thread-stats .stat .label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+  }
+  .thread-stats .activity {
+    margin-top: 8px;
+    width: 100%;
+    height: 24px;
+  }
+
+  /* ========== 发帖区域（disabled） ========== */
+  .compose-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .compose-box {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 48px 40px;
+    text-align: center;
+    position: relative;
+  }
+  .compose-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .compose-box .warn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .compose-box h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .compose-box .desc {
+    max-width: 520px;
+    margin: 0 auto 28px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+  }
+  .compose-box .desc em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .compose-box .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .compose-link {
+    padding: 10px 20px;
+    border: 1px solid rgba(232, 230, 221, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--paper);
+    transition: all 0.2s;
+  }
+  .compose-link:hover {
+    border-color: var(--acid);
+    color: var(--acid);
+    background: rgba(212, 255, 58, 0.05);
+  }
+  .compose-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .compose-link.disabled:hover {
+    border-color: rgba(232, 230, 221, 0.2);
+    color: var(--paper);
+    background: transparent;
+  }
+
+  /* ========== 静态话题词云（侧栏感）========== */
+  .topics-strip {
+    margin-top: 32px;
+    padding: 24px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+  }
+  .topics-strip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--acid);
+    margin-bottom: 16px;
+  }
+  .topics-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: baseline;
+  }
+  .topics-cloud .topic {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(232, 230, 221, 0.6);
+    transition: color 0.2s;
+  }
+  .topics-cloud .topic:hover { color: var(--acid); }
+  .topics-cloud .topic .count {
+    font-size: 9px;
+    color: var(--paper-dim);
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 页面 Hero ========== -->
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="index.html">首页 / Index</a> &nbsp;/&nbsp; <span style="color: var(--acid);">讨论 / Discourse</span>
+    </div>
+    <h1>
+      讨论 · 电波
+      <span class="en">— transmissions from the listener network</span>
+    </h1>
+    <p class="lead">
+      一份从全球数摇爱好者那里截获的<strong>电波档案</strong>。这里有人在求拍号、有人在推荐冷门乐队、有人在争论 black midi 算不算数摇——和任何一个真正的爱好者社区一样混乱、有趣、不准确。<em style="color: var(--paper-dim); font-style: italic;"></em>
+    </p>
+
+    <!-- 信号面板 -->
+    <div class="signal-panel">
+      <div class="signal-status">
+        <span class="dot"></span>
+        <span>信号接入 · LIVE</span>
+      </div>
+      <div class="signal-readout">
+        <div class="item"><span class="label">活跃用户</span><span class="value" id="active-users">187</span></div>
+        <div class="item"><span class="label">本周帖数</span><span class="value">42</span></div>
+        <div class="item"><span class="label">信号强度</span><span class="value" id="signal-db">-42 dB</span></div>
+        <div class="item"><span class="label">频率</span><span class="value">144.500 MHz</span></div>
+      </div>
+      <div class="signal-bars" id="signal-bars">
+        <div class="bar" style="height: 30%;"></div>
+        <div class="bar" style="height: 60%;"></div>
+        <div class="bar" style="height: 80%;"></div>
+        <div class="bar" style="height: 50%;"></div>
+        <div class="bar" style="height: 90%;"></div>
+        <div class="bar" style="height: 40%;"></div>
+        <div class="bar" style="height: 70%;"></div>
+      </div>
+    </div>
+
+    <!-- 静态话题词云 -->
+    <div class="topics-strip">
+      <div class="topics-strip-label">// 本周热议 · trending topics</div>
+      <div class="topics-cloud">
+        <span class="topic" style="font-size: 22px;">#ArcTanGent2026 <span class="count">(28)</span></span>
+        <span class="topic" style="font-size: 18px;">#Yesness新专 <span class="count">(19)</span></span>
+        <span class="topic" style="font-size: 16px;">#拍号求助 <span class="count">(15)</span></span>
+        <span class="topic" style="font-size: 19px;">#tricot10周年 <span class="count">(22)</span></span>
+        <span class="topic" style="font-size: 14px;">#冷门日本数摇 <span class="count">(11)</span></span>
+        <span class="topic" style="font-size: 17px;">#Standards新EP <span class="count">(18)</span></span>
+        <span class="topic" style="font-size: 13px;">#BlackMidi争论 <span class="count">(9)</span></span>
+        <span class="topic" style="font-size: 15px;">#开放调弦交流 <span class="count">(13)</span></span>
+        <span class="topic" style="font-size: 12px;">#循环器推荐 <span class="count">(7)</span></span>
+        <span class="topic" style="font-size: 16px;">#东京livehouse <span class="count">(14)</span></span>
+        <span class="topic" style="font-size: 11px;">#MathRockOST <span class="count">(5)</span></span>
+        <span class="topic" style="font-size: 14px;">#自制作品分享 <span class="count">(12)</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 分类筛选 ========== -->
+<section class="filter-section">
+  <div class="container">
+    <div class="filter-bar" id="filter-bar"></div>
+  </div>
+</section>
+
+<!-- ========== 帖子列表 ========== -->
+<section class="threads-section">
+  <div class="container">
+    <div class="thread-list" id="thread-list"></div>
+  </div>
+</section>
+
+<!-- ========== 发帖区域（disabled） ========== -->
+<section class="compose-section">
+  <div class="container">
+    <div class="compose-box">
+      <div class="warn-label">▲ TRANSMITTER OFFLINE · </div>
+      <h3></h3>
+      <p class="desc">
+        
+      </p>
+      <div class="links">
+        <a href="https://www.reddit.com/r/mathrock/" target="_blank" rel="noopener" class="compose-link">r/mathrock · Reddit</a>
+        <a href="https://feckingbahamas.com/" target="_blank" rel="noopener" class="compose-link">Fecking Bahamas</a>
+        <a href="#" class="compose-link disabled" onclick="event.preventDefault(); alert('本站为田野指南，发帖功能未启用。');">+ 发表新帖</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+
+  // ========== 帖子数据 ==========
+  const THREADS = [
+    {
+      pinned: true,
+      tag: 'archive', tagName: '资源',
+      title: '【置顶 · 田野指南】POLYMETER 站长公告 · 关于这个论坛的存在意义',
+      excerpt: '欢迎来到本站讨论区。这里展示的是一份"虚构论坛"——所有帖子都是为了呈现数摇爱好者社区的样态而写的。如果你想真的找人聊，请去 r/mathrock 或 Fecking Bahamas。如果你只是想看看其他人在聊什么——往下翻吧。',
+      author: 'OPERATOR #0001',
+      time: '2026-01-15',
+      relative: '置顶',
+      replies: 3,
+      views: 8421
+    },
+    {
+      tag: 'tech', tagName: '技术',
+      title: 'Sleeping People《Big River》开头那段是 13/8 还是 7/4 + 加拍？',
+      excerpt: '我数了三遍每遍数出来都不一样……鼓 fill 把强拍位置完全打乱了。有大佬能帮我数一下吗？或者有谁知道他们的鼓手在采访里有没有说过这首歌的拍号设计？',
+      author: 'LISTENER #4D52',
+      time: '17 分钟前',
+      relative: '17m',
+      replies: 14,
+      views: 87
+    },
+    {
+      tag: 'debate', tagName: '流派争论',
+      title: 'black midi 真的能算数摇吗？我有点不同意见',
+      excerpt: '借 ArcTanGent 阵容讨论一下：black midi 真的能算数摇吗？我觉得他们更接近 brutal prog / no-wave / 实验摇滚。"数摇"这个词被滥用了，照这样下去什么乐队都能往里塞。',
+      author: 'OBSERVER #7F12',
+      time: '2 小时前',
+      relative: '2h',
+      replies: 67,
+      views: 1240
+    },
+    {
+      tag: 'rec', tagName: '推荐',
+      title: '听完 toe 之后还能听啥？日式数摇的"温柔"分支',
+      slug: 'post-toe-recommendations',
+      excerpt: '感觉 toe 把一种"安静的复杂"做到了极致。有没有类似气质的乐队推荐？要日本的、要带钢琴或键盘的、要器乐为主。已知：mouse on the keys、LITE、te\'。还想发掘更冷门的。',
+      author: 'LISTENER #B3A1',
+      time: '昨天 23:14',
+      relative: '14h',
+      replies: 28,
+      views: 412
+    },
+    {
+      tag: 'live', tagName: '演出',
+      title: '【东京 · 5 月】Shimokitazawa SHELTER 数摇专场 · 4 组阵容',
+      slug: 'shimokitazawa-shelter-may',
+      excerpt: '5 月 17 日下北沢 SHELTER。阵容：toe（短组合）/ tricot / mouse on the keys / 一支待定。预售 ¥4,500。这种阵容大概十年遇一次，有人想拼票/求约伴的可以扣我。',
+      author: 'LISTENER #9C44',
+      time: '昨天 18:02',
+      relative: '20h',
+      replies: 41,
+      views: 689
+    },
+    {
+      tag: 'share', tagName: '作品',
+      title: '我录了一段 11/8 拍的练习，技术不行求批评',
+      slug: '11-8-practice-feedback',
+      excerpt: '玩了两年吉他，最近开始尝试不规则拍号。这段是 11/8（3+2+3+3）的练习曲，受 Don Caballero 影响很重。录音用的 iPhone 直接对着箱琴录，凑合听。轻一点骂我谢谢。soundcloud.com/...',
+      author: 'LISTENER #2E89',
+      time: '昨天 14:32',
+      relative: '23h',
+      replies: 9,
+      views: 156
+    },
+    {
+      tag: 'archive', tagName: '资源',
+      title: '关于 Slint《Spiderland》黑胶 2014 重发版的母带考据',
+      slug: 'spiderland-mastering-analysis',
+      excerpt: 'Touch and Go 在 2014 年的重发版用了原始 1/2" 模拟母带做的混音，与 1991 年首版有微妙差异。我对比了三个版本的频谱图，发现重发版中频抬升了约 2dB……（长文，含频谱截图）',
+      author: 'ARCHIVIST #1A2B',
+      time: '前天',
+      relative: '2d',
+      replies: 22,
+      views: 487
+    },
+    {
+      tag: 'tech', tagName: '技术',
+      title: 'American Football《Never Meant》开头琶音的开放调弦是 FACGCE 还是 EADGBE？',
+      slug: 'american-football-tuning',
+      excerpt: '我看 Mike Kinsella 的吉他课视频里他用的是 FACGCE，但网上 tab 大部分写的是标准调弦的变种。有谁能 confirm 一下原版到底是哪种？',
+      author: 'LISTENER #6D33',
+      time: '3 天前',
+      relative: '3d',
+      replies: 19,
+      views: 324
+    },
+    {
+      tag: 'debate', tagName: '流派争论',
+      title: 'CHON 和 Polyphia 究竟还算不算"数摇"？fusion 化的边界在哪？',
+      excerpt: '随着 CHON、Polyphia、Covet 这些乐队越来越接近 fusion / smooth jazz，他们的作品里"数摇"的元素其实在变少。和 Slint 那种黑暗、紧张的美学比，这两条路线已经几乎不像同一种音乐了。我们应该把它们叫"现代旋律数摇"，还是干脆承认它已经变成了别的流派？',
+      author: 'OBSERVER #5C71',
+      time: '3 天前',
+      relative: '3d',
+      replies: 53,
+      views: 982
+    },
+    {
+      tag: 'rec', tagName: '推荐',
+      title: '中文圈数摇/后摇推荐？除了惘闻、海朋森还有谁',
+      excerpt: '想找点华语圈的相关音乐。注意我知道惘闻是 post-rock、海朋森是 post-punk，不是严格意义上的数摇。但能不能推荐一些华语圈的真正数摇乐队？台湾、香港、大陆都行。',
+      author: 'LISTENER #88F1',
+      time: '4 天前',
+      relative: '4d',
+      replies: 31,
+      views: 558
+    },
+    {
+      tag: 'archive', tagName: '资源',
+      title: 'Don Caballero《American Don》专辑文字翻译求助 · 内文小册子',
+      excerpt: '2000 年首版的内文小册子里有一段 Damon Che 的访谈，全英文且很多匹兹堡本地俚语。我能看懂大意但很多地方拿不准。有谁手上有这版黑胶并且愿意一起做个翻译？',
+      author: 'ARCHIVIST #4F22',
+      time: '4 天前',
+      relative: '4d',
+      replies: 7,
+      views: 142
+    },
+    {
+      tag: 'live', tagName: '演出',
+      title: '【上海 · 4 月】Standards 亚洲巡演首站 · MAO Livehouse',
+      excerpt: '官宣了！4 月 28 日 MAO Livehouse。Standards 第一次来中国。预售 ¥380 / 现场 ¥450。Marcos Mena 一个人 + 一台鼓 + 一台 looper 上台，能不能顶住现场是个问题，但氛围一定很爽。',
+      author: 'LISTENER #C4D5',
+      time: '5 天前',
+      relative: '5d',
+      replies: 38,
+      views: 712
+    },
+    {
+      tag: 'tech', tagName: '技术',
+      title: '想入一台 looper pedal 做现场，Boss RC-505 vs Headrush Looperboard',
+      excerpt: '想做 toe / Standards 那种现场即时构筑层的演奏。预算 5000 以内，主要看重：1) MIDI 同步精度 2) 音质 3) 学习曲线。两台都试过的朋友能给点意见吗？',
+      author: 'LISTENER #7B19',
+      time: '6 天前',
+      relative: '6d',
+      replies: 16,
+      views: 284
+    },
+    {
+      tag: 'rec', tagName: '推荐',
+      title: '韩国数摇乐队推荐 · 被低估的 Vidulgi OoyoO 和 Idiotape',
+      excerpt: '韩国独立摇滚圈里其实有不少数摇/后摇乐队但很少被讨论。Vidulgi OoyoO（受 Mogwai 影响重）和 Idiotape（电子化的 math-electronic）都很值得听。有谁还知道其他韩国数摇的名字？',
+      author: 'LISTENER #A8E2',
+      time: '1 周前',
+      relative: '1w',
+      replies: 23,
+      views: 391
+    },
+    {
+      tag: 'share', tagName: '作品',
+      title: '我和我哥们组了个二人乐队，第一支 demo 想求毒舌批评',
+      excerpt: '吉他+鼓的二人编制，很受 Standards 和 Giraffes? Giraffes! 影响。这是第一首完整的曲子，4 分多钟，有 7/8 → 5/4 → 4/4 的换拍。求毒舌批评不要客气。bandcamp.com/...',
+      author: 'LISTENER #D7A6',
+      time: '1 周前',
+      relative: '1w',
+      replies: 17,
+      views: 245
+    },
+    {
+      tag: 'debate', tagName: '流派争论',
+      title: '"twinkly emo"和"math rock"的边界到底在哪？',
+      excerpt: 'TTNG、American Football、Algernon Cadwallader、Snowing 这些乐队……我感觉所有人都在用同一组词描述他们：闪烁的吉他、emo 倾向、不规则拍号。但我们到底是在描述同一种音乐，还是两种音乐被强行合并？',
+      author: 'OBSERVER #3F87',
+      time: '1 周前',
+      relative: '1w',
+      replies: 44,
+      views: 678
+    },
+    {
+      tag: 'archive', tagName: '资源',
+      title: 'tricot 早期 demo 的中文歌词翻译合集（持续更新）',
+      excerpt: '在做 tricot 2010-2013 早期作品的歌词翻译。Ikkyu 的歌词意象很跳跃、很难翻——很多双关、很多日式青春感。已完成 12 首，欢迎日语好的朋友来挑错。文档链接见下。',
+      author: 'ARCHIVIST #E1F0',
+      time: '1 周前',
+      relative: '1w',
+      replies: 11,
+      views: 198
+    },
+    {
+      tag: 'tech', tagName: '技术',
+      title: '点弦时左手按弦的力度怎么练？我的手会很快发酸',
+      excerpt: '试着学 Standards 的那种点弦风格，左手要长时间按住低音的同时右手在指板上敲。但我练 5 分钟左手就酸到不行。是天生肌肉不够还是技巧问题？有什么针对性的练习吗？',
+      author: 'LISTENER #6F44',
+      time: '2 周前',
+      relative: '2w',
+      replies: 26,
+      views: 445
+    },
+    {
+      tag: 'live', tagName: '演出',
+      title: '【柏林 · 6 月】ArcTanGent Europe Tour · Delta Sleep + Alpha Male Tea Party',
+      excerpt: 'ArcTanGent 节日方推出的小型欧洲巡演，柏林站在 Lido。两支英国数摇核心阵容同台。已经买票了，感觉会是今年最爽的一晚。柏林本地有人去吗？',
+      author: 'LISTENER #B2C9',
+      time: '2 周前',
+      relative: '2w',
+      replies: 14,
+      views: 267
+    },
+    {
+      tag: 'rec', tagName: '推荐',
+      title: '数摇 + 电子的杂交体推荐？类似 Battles《Mirrored》的方向',
+      excerpt: 'Battles 之后这条线似乎没什么继任者。有谁推荐过这种"数摇骨架 + 电子血肉"的乐队吗？想到的有 Adebisi Shank、65daysofstatic 早期，还有别的吗？',
+      author: 'LISTENER #4A8E',
+      time: '2 周前',
+      relative: '2w',
+      replies: 29,
+      views: 503
+    },
+    {
+      tag: 'archive', tagName: '资源',
+      title: 'toe 全 discography 中文翻唱歌词整理（含罕见 EP）',
+      excerpt: 'toe 的曲名很多是日文、有些标点符号有特殊含义（《グッドバイ。》末尾的句号是有意义的）。我整理了一份 toe 自 2002 年以来所有作品的中文译名 + 翻译注释，欢迎查漏补缺。',
+      author: 'ARCHIVIST #7D11',
+      time: '3 周前',
+      relative: '3w',
+      replies: 18,
+      views: 376
+    },
+    {
+      tag: 'share', tagName: '作品',
+      title: '尝试用钢琴翻奏 American Football《Never Meant》',
+      excerpt: '把 Mike Kinsella 的吉他琶音改编成钢琴版本。改编过程中发现原曲的开放调弦其实让吉他承担了很多打击乐的功能——钢琴失去了那种"敲击感"。有人试过类似的改编吗？',
+      author: 'LISTENER #5B7F',
+      time: '3 周前',
+      relative: '3w',
+      replies: 12,
+      views: 213
+    },
+    {
+      tag: 'debate', tagName: '流派争论',
+      title: 'Slint 真的是"第一支数摇乐队"吗？前史里其实还有 King Crimson',
+      slug: 'slint-vs-king-crimson',
+      excerpt: '所有人都说 Slint《Spiderland》是数摇起点。但 King Crimson 1981 年的《Discipline》其实已经把不规则拍号 + 复合拍号做出来了。为什么数摇的"祖先"不算 King Crimson 而算 Slint？是因为 KC 是英国 prog rock 阵营吗？',
+      author: 'OBSERVER #8A1C',
+      time: '3 周前',
+      relative: '3w',
+      replies: 71,
+      views: 1432
+    },
+    {
+      tag: 'tech', tagName: '技术',
+      title: '想买把适合数摇的吉他，预算 1 万以内 · 求建议',
+      excerpt: 'Telecaster 还是 ES-335？两把都试过，Tele 的清音更"刀"一些，335 更"厚"一些。我主要弹清音琶音 + 偶尔点弦。有同样玩数摇的朋友能分享一下你的选择吗？',
+      author: 'LISTENER #9E2D',
+      time: '1 个月前',
+      relative: '1mo',
+      replies: 35,
+      views: 612
+    },
+    {
+      tag: 'rec', tagName: '推荐',
+      title: '数摇 OST 推荐 · 游戏/动画里出现过的数摇曲',
+      excerpt: '《Celeste》OST 让我入了 Lena Raine 的坑。CHON 的曲子也在《Steven Universe》里出现过。还有什么游戏/动画用过数摇做配乐吗？想做个清单。',
+      author: 'LISTENER #C7B8',
+      time: '1 个月前',
+      relative: '1mo',
+      replies: 24,
+      views: 458
+    },
+    {
+      tag: 'archive', tagName: '资源',
+      title: 'Fecking Bahamas 网站 2024 年榜的中文翻译（已完工）',
+      excerpt: 'Fecking Bahamas 是英语圈最重要的数摇媒体。我把他们 2024 年度十大专辑的乐评全部翻译了，附原文链接。已发布在我的 Bandcamp 页面，欢迎查漏补缺。',
+      author: 'ARCHIVIST #2C9D',
+      time: '1 个月前',
+      relative: '1mo',
+      replies: 13,
+      views: 289
+    },
+    {
+      tag: 'live', tagName: '演出',
+      title: '【东京 / 大阪】toe 2026 年发新专巡演 · 抢票攻略',
+      excerpt: 'toe 时隔多年终于要发新专了，配套日本巡演 5 月开票。东京两场（Liquid Room）、大阪一场（Big Cat）。有抢票经验的朋友能分享一下他们的售票系统是怎么操作的吗？',
+      author: 'LISTENER #1F6E',
+      time: '1 个月前',
+      relative: '1mo',
+      replies: 47,
+      views: 856
+    },
+  ];
+
+  const TAGS = [
+    { id: 'all',     name: '全部',  count: THREADS.length },
+    { id: 'tech',    name: '技术求助' },
+    { id: 'rec',     name: '乐队推荐' },
+    { id: 'debate',  name: '流派争论' },
+    { id: 'share',   name: '作品分享' },
+    { id: 'live',    name: '演出信息' },
+    { id: 'archive', name: '资源/翻译' },
+  ];
+  TAGS.forEach(t => {
+    if (t.id !== 'all') t.count = THREADS.filter(x => x.tag === t.id).length;
+  });
+
+  let activeTag = 'all';
+
+  function renderFilter() {
+    document.getElementById('filter-bar').innerHTML =
+      `<span class="label">// 筛选 · filter</span>` +
+      TAGS.map(t => `
+        <button class="filter-btn ${t.id === activeTag ? 'active' : ''}" data-tag="${t.id}">
+          <span>${t.name}</span>
+          <span class="count">[${t.count}]</span>
+        </button>
+      `).join('');
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTag = btn.dataset.tag;
+        renderFilter();
+        renderThreads();
+      });
+    });
+  }
+
+  function renderThreads() {
+    const filtered = activeTag === 'all'
+      ? THREADS
+      : THREADS.filter(t => t.tag === activeTag || t.pinned);
+
+    document.getElementById('thread-list').innerHTML = filtered.map(t => {
+      const hasDetail = !!t.slug;
+      const tag = hasDetail ? 'a' : 'div';
+      const attrs = hasDetail
+        ? `href="discourse/${t.slug}.html"`
+        : `onclick="alert('该帖归档中 — 详情页尚未生成。\\n\\n本站当前为 6 条代表性帖子做了详情页演示，其余样本帖子的完整内容待补充。')"`;
+      return `
+      <${tag} ${attrs} class="thread-card ${t.pinned ? 'pinned' : ''} ${hasDetail ? 'has-detail' : 'no-detail'}">
+        <div class="thread-meta-left">
+          <div class="thread-time">
+            <div class="relative">${t.relative}</div>
+            <div style="margin-top: 2px;">${t.time}</div>
+          </div>
+          <div class="thread-id">${t.author.split(' ')[1] || ''}</div>
+        </div>
+        <div class="thread-body">
+          <span class="thread-tag ${t.tag}">${t.tagName}</span>
+          ${hasDetail ? '<span class="thread-archived-badge">▸ 已存档 · ARCHIVED</span>' : ''}
+          <h3 class="thread-title">${t.title}</h3>
+          <p class="thread-excerpt">${t.excerpt}</p>
+          <div class="thread-author">
+            <span class="listener">${t.author}</span>
+            <span style="opacity: 0.5;"> · 信号 ${Math.floor(Math.random() * 30 + 60)}% · </span>
+            <span>${hasDetail ? '可阅读 →' : '已验证'}</span>
+          </div>
+        </div>
+        <div class="thread-stats">
+          <div class="stat">
+            <span class="num">${t.replies}</span>
+            <span class="label">回复</span>
+          </div>
+          <div class="stat">
+            <span class="num">${t.views >= 1000 ? (t.views/1000).toFixed(1) + 'k' : t.views}</span>
+            <span class="label">浏览</span>
+          </div>
+          <svg class="activity" viewBox="0 0 100 24" preserveAspectRatio="none">
+            <polyline data-act="${t.author}" fill="none" stroke="rgba(212, 255, 58, 0.5)" stroke-width="1"/>
+          </svg>
+        </div>
+      </${tag}>
+    `;
+    }).join('');
+
+    // 给每条帖子的活动曲线画上随机波形
+    document.querySelectorAll('[data-act]').forEach((el, i) => {
+      const points = [];
+      const seed = i * 7;
+      for (let x = 0; x <= 100; x += 5) {
+        const y = 12 + Math.sin((x + seed) * 0.15) * 6 + Math.cos((x + seed) * 0.3) * 4;
+        points.push(`${x},${y}`);
+      }
+      el.setAttribute('points', points.join(' '));
+    });
+  }
+
+  renderFilter();
+  renderThreads();
+
+  // 信号面板的小动画 — 假数据流动感
+  let activeUsers = 187;
+  let signalDb = -42;
+  setInterval(() => {
+    activeUsers += Math.floor(Math.random() * 5 - 2);
+    if (activeUsers < 150) activeUsers = 150;
+    if (activeUsers > 220) activeUsers = 220;
+    document.getElementById('active-users').textContent = activeUsers;
+
+    signalDb = -42 + Math.floor(Math.random() * 8 - 4);
+    document.getElementById('signal-db').textContent = `${signalDb} dB`;
+
+    document.querySelectorAll('#signal-bars .bar').forEach(bar => {
+      bar.style.height = (Math.random() * 80 + 20) + '%';
+    });
+  }, 1800);
+</script>
+
+</body>
+</html>

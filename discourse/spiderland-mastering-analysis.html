@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于 Slint《Spiderland》黑胶 2014 重发版的母带考据 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero .crumbs a:hover { color: var(--acid); }
+
+  .thread-tag-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .thread-tag-pill.tech     { color: #d4ff3a; }
+  .thread-tag-pill.rec      { color: #67e8f9; }
+  .thread-tag-pill.debate   { color: #ff5b3a; }
+  .thread-tag-pill.share    { color: #f0abfc; }
+  .thread-tag-pill.live     { color: #fcd34d; }
+  .thread-tag-pill.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 920px;
+  }
+
+  .thread-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .thread-meta-bar .author { color: var(--acid); }
+  .thread-meta-bar .stat .num {
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ========== 帖子正文 ========== */
+  .thread-content-section {
+    padding: 64px 0;
+  }
+  .thread-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.9);
+  }
+  .thread-content p { margin-bottom: 20px; }
+  .thread-content h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(212, 255, 58, 0.2);
+    color: var(--paper);
+  }
+  .thread-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    color: var(--acid);
+  }
+  .thread-content strong { color: var(--acid); font-weight: 700; }
+  .thread-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .thread-content a {
+    color: var(--acid);
+    border-bottom: 1px solid rgba(212, 255, 58, 0.4);
+    transition: border-color 0.2s;
+  }
+  .thread-content a:hover { border-bottom-color: var(--acid); }
+  .thread-content ul, .thread-content ol {
+    padding-left: 28px;
+    margin-bottom: 20px;
+  }
+  .thread-content li { margin-bottom: 8px; }
+  .thread-content blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 12px 24px;
+    margin: 24px 0;
+    background: rgba(212, 255, 58, 0.04);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .thread-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+    border-radius: 2px;
+  }
+  .thread-content pre {
+    background: var(--ink-2);
+    border: 1px solid rgba(232, 230, 221, 0.1);
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .thread-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .thread-content table {
+    width: 100%;
+    margin: 24px 0;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .thread-content table th,
+  .thread-content table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .thread-content table th {
+    color: var(--acid);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 11px;
+  }
+  .thread-content hr {
+    border: 0;
+    border-top: 1px dashed rgba(232, 230, 221, 0.15);
+    margin: 36px 0;
+  }
+
+  /* ========== 样本回复 ========== */
+  .replies-section {
+    padding: 64px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .replies-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .replies-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .replies-header .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--signal);
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    text-transform: uppercase;
+  }
+  .replies-header .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+
+  .reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reply-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .reply-item { grid-template-columns: 180px 1fr; gap: 32px; }
+  }
+  .reply-item:last-child { border-bottom: 0; }
+  .reply-meta {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .reply-meta .author {
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .reply-meta .time {
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .reply-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .reply-body p { margin-bottom: 12px; }
+  .reply-body p:last-child { margin-bottom: 0; }
+  .reply-body strong { color: var(--acid); }
+  .reply-body em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .reply-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+  }
+  .reply-body blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 8px 18px;
+    margin: 12px 0;
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .reply-body ul, .reply-body ol { padding-left: 24px; }
+  .reply-body li { margin-bottom: 6px; }
+
+  /* ========== Cusdis 占位框 ========== */
+  .comments-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .comments-placeholder {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 48px 32px;
+    position: relative;
+  }
+  .comments-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .comments-placeholder .ph-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .comments-placeholder h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .comments-placeholder p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 580px;
+  }
+  .comments-placeholder p em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  /* ========== 返回导航 ========== */
+  .back-nav {
+    padding: 32px 0 64px;
+    text-align: center;
+  }
+  .back-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    transition: color 0.2s;
+    padding: 12px 24px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .back-nav a:hover {
+    color: var(--acid);
+    border-color: var(--acid);
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="../index.html">首页 / Index</a> &nbsp;/&nbsp;
+      <a href="../discourse.html">讨论 / Discourse</a> &nbsp;/&nbsp;
+      <span style="color: var(--acid);">spiderland-mastering-analysis</span>
+    </div>
+    <span class="thread-tag-pill archive">资源</span>
+    <h1 class="thread-title">关于 Slint《Spiderland》黑胶 2014 重发版的母带考据</h1>
+    <div class="thread-meta-bar">
+      <span class="author">ARCHIVIST #1A2B</span>
+      <span>2026-04-28 · 前天</span>
+      <span class="stat"><span class="num">      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OPERATOR #2B5E</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>感谢这种硬核考据。补充一点：我和 Brian Paulson 在 2019 年的一个 podcast（<em>Scientist of Sound</em>）里聊过这件事，他承认 2014 版的低频处理是 <em>他个人对当时录音遗憾的修正</em>——他说 1991 年因为预算所限，没办法在母带上做他想做的低频处理，2014 年终于"让低音回到它该在的位置"。</p>
+<p>所以严格说<strong>2014 版才是 Paulson 心目中的"原版"</strong>。1991 CD 是被妥协的版本。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #4F22</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>Drag City 的 2018 二手豪华版我有。等周末用同样的 ADC 转录一份给你做对比。</p>
+<p>顺便说：2018 版用的是 <em>2014 版的母带源</em> + 不同的切片机，所以理论上和 2014 版应该 <em>几乎一致</em>，但因为切片差异可能有 ±1dB 的频段偏差。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #8A1C</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>请教一个问题：你做这种频谱对比时，<strong>在样本选择上有没有人声/无人声段的偏差</strong>？《Good Morning, Captain》开头 30 秒是几乎纯吉他+念白，但中段大爆发的频谱可能完全不同。</p>
+<p>建议在三个版本都对比"全曲平均频谱"+ "选定段落"两组数据，会更准确。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6F44</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>完全外行问一句：我能不能"听出来"这些差异？还是只能在频谱图上看到？</p>
+<p>我有 2014 黑胶和 1991 CD 两个版本，盲听切换时确实觉得 2014 更"宽广"，但说不上是中频抬升还是低频抬升。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #1A2B</div>
+          <div class="time">昨天 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@LISTENER #6F44 你能听出"宽广感"已经说明你听到了——那就是<strong>低频 +2~5dB 抬升</strong>带来的"重量感"。普通人很难单独识别"中频"还是"低频"，但能感知整体的"轻 vs 重"。这正常。</p>
+<p>@OBSERVER #8A1C 同意你的方法论。这就去做全曲平均频谱的版本，下周更新。</p>
+<p>@ARCHIVIST #4F22 等你的 2018 数据，到时候我们三个版本变四个版本。</p></div>
+      </div></span> 回复</span>
+      <span class="stat"><span class="num">487</span> 浏览</span>
+    </div>
+  </div>
+</section>
+
+<section class="thread-content-section">
+  <div class="container">
+    <article class="thread-content">
+<p>Touch and Go 在 2014 年发行的 <em>Spiderland</em> 重发版（含纪录片 <em>Breadcrumb Trail</em> DVD 的豪华套装）使用了<strong>原始 1/2" 模拟母带做的混音</strong>。这与 1991 年首版 CD（数字混音）和 2008 年的 SACD（数字过滤后版本）有微妙但<strong>可测量</strong>的差异。</p>
+<p>我用 Audacity 做了三个版本的频谱对比，结论很有意思。</p>
+<hr />
+<h2>测试方法</h2>
+<ul>
+<li><strong>样本</strong>：《Good Morning, Captain》的开头 30 秒（最具代表性的安静段）</li>
+<li><strong>三个版本</strong>：
+  1. 1991 年首版 CD rip（44.1 kHz / 16 bit）
+  2. 2008 年 SACD rip 降采样（96 kHz / 24 bit → 44.1 / 16）
+  3. 2014 年黑胶 rip（96 kHz / 24 bit，自 ADC 转录）</li>
+<li><strong>分析工具</strong>：Audacity Spectrogram + iZotope RX 频谱</li>
+</ul>
+<h2>主要发现</h2>
+<h3>中频抬升</h3>
+<p>2014 年版在 <strong>800Hz - 2.5kHz</strong> 范围<strong>比 1991 版高约 +2dB</strong>。这正是人声主体频段——Brian McMahan 的念白在新版里更"贴近"，1991 年版则更"远"。</p>
+<blockquote>
+<p>推测原因：原始模拟母带在 1991 年混音时被故意压缩了中频以求"幽灵感"。2014 重制时这个压缩被还原。</p>
+</blockquote>
+<h3>高频损失（黑胶不可避免）</h3>
+<blockquote>
+<p>2014 黑胶版在 <strong>15kHz 以上</strong>有约 -6dB 的衰减，这是物理介质的限制（黑胶切片机的物理极限），不是混音意图。所以"黑胶版更暖"的感受其实部分来自这种<strong>失真</strong>。</p>
+</blockquote>
+<h3>低频差异最大</h3>
+<pre><code>频段        1991 CD      2008 SACD     2014 LP
+-----------  ---------    ----------   --------
+30-60 Hz     -18 dB       -16 dB       -12 dB
+60-200 Hz     -8 dB        -7 dB        -3 dB
+</code></pre>
+<p><strong>2014 版的低音部分明显更厚</strong>——这是 Brian Paulson（原制作人）在 2014 重制时的有意选择。原始 1991 年版的低音其实是被 <em>砍掉</em> 的，目的是让吉他显得更"赤裸"。</p>
+<hr />
+<h2>结论</h2>
+<p>每个版本都是 <em>不同的艺术决定</em>，没有"原版"这个概念：</p>
+<ul>
+<li><strong>1991 CD</strong> = 1991 年的审美（干、冷、远）</li>
+<li><strong>2014 LP</strong> = 后人重新解读 1991 年的录音（厚、近、暖）</li>
+</ul>
+<p>这就引出一个收藏家圈子永恒的争论：<strong>重制版改变了原作意图，是修复还是篡改？</strong></p>
+<p>有谁手上有 <strong>2018 年 Drag City 出的二手豪华黑胶</strong>？想再加一组样本对比。</p>
+    </article>
+  </div>
+</section>
+
+<section class="replies-section">
+  <div class="container">
+    <div class="replies-header">
+      <h2>样本回复</h2>
+      <span class="badge">▲ FIXTURE · 虚构</span>
+      <span class="count">5 replies</span>
+    </div>
+    <div class="reply-list">
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OPERATOR #2B5E</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>感谢这种硬核考据。补充一点：我和 Brian Paulson 在 2019 年的一个 podcast（<em>Scientist of Sound</em>）里聊过这件事，他承认 2014 版的低频处理是 <em>他个人对当时录音遗憾的修正</em>——他说 1991 年因为预算所限，没办法在母带上做他想做的低频处理，2014 年终于"让低音回到它该在的位置"。</p>
+<p>所以严格说<strong>2014 版才是 Paulson 心目中的"原版"</strong>。1991 CD 是被妥协的版本。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #4F22</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>Drag City 的 2018 二手豪华版我有。等周末用同样的 ADC 转录一份给你做对比。</p>
+<p>顺便说：2018 版用的是 <em>2014 版的母带源</em> + 不同的切片机，所以理论上和 2014 版应该 <em>几乎一致</em>，但因为切片差异可能有 ±1dB 的频段偏差。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #8A1C</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>请教一个问题：你做这种频谱对比时，<strong>在样本选择上有没有人声/无人声段的偏差</strong>？《Good Morning, Captain》开头 30 秒是几乎纯吉他+念白，但中段大爆发的频谱可能完全不同。</p>
+<p>建议在三个版本都对比"全曲平均频谱"+ "选定段落"两组数据，会更准确。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6F44</div>
+          <div class="time">前天</div>
+        </div>
+        <div class="reply-body"><p>完全外行问一句：我能不能"听出来"这些差异？还是只能在频谱图上看到？</p>
+<p>我有 2014 黑胶和 1991 CD 两个版本，盲听切换时确实觉得 2014 更"宽广"，但说不上是中频抬升还是低频抬升。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #1A2B</div>
+          <div class="time">昨天 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@LISTENER #6F44 你能听出"宽广感"已经说明你听到了——那就是<strong>低频 +2~5dB 抬升</strong>带来的"重量感"。普通人很难单独识别"中频"还是"低频"，但能感知整体的"轻 vs 重"。这正常。</p>
+<p>@OBSERVER #8A1C 同意你的方法论。这就去做全曲平均频谱的版本，下周更新。</p>
+<p>@ARCHIVIST #4F22 等你的 2018 数据，到时候我们三个版本变四个版本。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <div class="container">
+    <div class="comments-placeholder">
+      <div class="ph-label">
+      <h3></h3>
+      <p>
+        
+      </p>
+
+      <!--
+        ====================================================================
+        FUTURE INTEGRATION · 未来部署 Cusdis 时的接入指南
+        ====================================================================
+
+        步骤 1: fork https://github.com/djyde/cusdis 部署到 Vercel
+        步骤 2: 配置 Vercel Postgres 数据库
+        步骤 3: 拿到你的 host URL 和 app_id
+        步骤 4: 把下面这段代码取消注释、替换占位符即可
+
+        <div id="cusdis_thread"
+             data-host="https://你的cusdis域名.vercel.app"
+             data-app-id="你的-app-id-uuid"
+             data-page-id="thread-005"
+             data-page-url="https://你的网站域名/discourse/spiderland-mastering-analysis.html"
+             data-page-title="关于 Slint《Spiderland》黑胶 2014 重发版的母带考据">
+        </div>
+        <script async defer src="https://你的cusdis域名.vercel.app/js/cusdis.es.js"></script>
+
+        ====================================================================
+      -->
+    </div>
+  </div>
+</section>
+
+<section class="back-nav">
+  <div class="container">
+    <a href="../discourse.html">← 返回讨论列表</a>
+  </div>
+</section>
+
+<script src="../shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+</script>
+
+</body>
+</html>

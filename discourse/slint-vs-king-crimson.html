@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slint 真的是「第一支数摇乐队」吗？前史里其实还有 King Crimson · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero .crumbs a:hover { color: var(--acid); }
+
+  .thread-tag-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .thread-tag-pill.tech     { color: #d4ff3a; }
+  .thread-tag-pill.rec      { color: #67e8f9; }
+  .thread-tag-pill.debate   { color: #ff5b3a; }
+  .thread-tag-pill.share    { color: #f0abfc; }
+  .thread-tag-pill.live     { color: #fcd34d; }
+  .thread-tag-pill.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 920px;
+  }
+
+  .thread-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .thread-meta-bar .author { color: var(--acid); }
+  .thread-meta-bar .stat .num {
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ========== 帖子正文 ========== */
+  .thread-content-section {
+    padding: 64px 0;
+  }
+  .thread-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.9);
+  }
+  .thread-content p { margin-bottom: 20px; }
+  .thread-content h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(212, 255, 58, 0.2);
+    color: var(--paper);
+  }
+  .thread-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    color: var(--acid);
+  }
+  .thread-content strong { color: var(--acid); font-weight: 700; }
+  .thread-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .thread-content a {
+    color: var(--acid);
+    border-bottom: 1px solid rgba(212, 255, 58, 0.4);
+    transition: border-color 0.2s;
+  }
+  .thread-content a:hover { border-bottom-color: var(--acid); }
+  .thread-content ul, .thread-content ol {
+    padding-left: 28px;
+    margin-bottom: 20px;
+  }
+  .thread-content li { margin-bottom: 8px; }
+  .thread-content blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 12px 24px;
+    margin: 24px 0;
+    background: rgba(212, 255, 58, 0.04);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .thread-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+    border-radius: 2px;
+  }
+  .thread-content pre {
+    background: var(--ink-2);
+    border: 1px solid rgba(232, 230, 221, 0.1);
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .thread-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .thread-content table {
+    width: 100%;
+    margin: 24px 0;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .thread-content table th,
+  .thread-content table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .thread-content table th {
+    color: var(--acid);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 11px;
+  }
+  .thread-content hr {
+    border: 0;
+    border-top: 1px dashed rgba(232, 230, 221, 0.15);
+    margin: 36px 0;
+  }
+
+  /* ========== 样本回复 ========== */
+  .replies-section {
+    padding: 64px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .replies-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .replies-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .replies-header .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--signal);
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    text-transform: uppercase;
+  }
+  .replies-header .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+
+  .reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reply-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .reply-item { grid-template-columns: 180px 1fr; gap: 32px; }
+  }
+  .reply-item:last-child { border-bottom: 0; }
+  .reply-meta {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .reply-meta .author {
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .reply-meta .time {
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .reply-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .reply-body p { margin-bottom: 12px; }
+  .reply-body p:last-child { margin-bottom: 0; }
+  .reply-body strong { color: var(--acid); }
+  .reply-body em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .reply-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+  }
+  .reply-body blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 8px 18px;
+    margin: 12px 0;
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .reply-body ul, .reply-body ol { padding-left: 24px; }
+  .reply-body li { margin-bottom: 6px; }
+
+  /* ========== Cusdis 占位框 ========== */
+  .comments-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .comments-placeholder {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 48px 32px;
+    position: relative;
+  }
+  .comments-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .comments-placeholder .ph-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .comments-placeholder h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .comments-placeholder p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 580px;
+  }
+  .comments-placeholder p em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  /* ========== 返回导航 ========== */
+  .back-nav {
+    padding: 32px 0 64px;
+    text-align: center;
+  }
+  .back-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    transition: color 0.2s;
+    padding: 12px 24px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .back-nav a:hover {
+    color: var(--acid);
+    border-color: var(--acid);
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="../index.html">首页 / Index</a> &nbsp;/&nbsp;
+      <a href="../discourse.html">讨论 / Discourse</a> &nbsp;/&nbsp;
+      <span style="color: var(--acid);">slint-vs-king-crimson</span>
+    </div>
+    <span class="thread-tag-pill debate">流派争论</span>
+    <h1 class="thread-title">Slint 真的是「第一支数摇乐队」吗？前史里其实还有 King Crimson</h1>
+    <div class="thread-meta-bar">
+      <span class="author">OBSERVER #8A1C</span>
+      <span>2026-04-09 · 3 周前</span>
+      <span class="stat"><span class="num">      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #4F22</div>
+          <div class="time">3 周前 · 已回复</div>
+        </div>
+        <div class="reply-body"><p>你忽略了一个更早的源头：<strong>Soft Machine 1971 年的《Fourth》</strong>。整张专辑全部都是不规则拍号 + 器乐 + 突变结构，比 Crimson《Discipline》还早十年。如果按你的逻辑追溯，最终会一路追到 50 年代的 Frank Zappa——这种"找祖先"的游戏没有终点。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #7F12</div>
+          <div class="time">3 周前</div>
+        </div>
+        <div class="reply-body"><p>其实 Slint 的吉他手 David Pajo 在采访里 <em>承认过</em> King Crimson 的影响。你可以去翻 1991 年那期 <em>Forced Exposure</em> 杂志。所以"Slint 没听过 KC"这个说法是错的——只是后来的乐评人为了把 Slint 包装成"全新流派"故意淡化了这条联系。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #4D52</div>
+          <div class="time">3 周前</div>
+        </div>
+        <div class="reply-body"><p>我觉得你的论点有道理但结论太极端了。Slint 之所以是"起点"，是因为他们的影响 <em>直接催生</em> 了后续整个流派——Don Caballero、Tortoise、June of 44 都明确说过受 Spiderland 影响。但这些人很少说"我们受 King Crimson 影响"。<strong>起点 ≠ 祖先。它是历史影响最密集的那个节点。</strong></p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OPERATOR #2B5E</div>
+          <div class="time">2 周前</div>
+        </div>
+        <div class="reply-body"><p>楼上说得好。补充一点：流派的"起点"很大程度上是个 <em>社会学</em> 问题而不是 <em>音乐学</em> 问题。同样的音乐元素，被不同的圈子接受、被不同的乐评人书写、被打包进不同的身份——就成了不同的流派。Slint 之于 KC 就像 punk 之于 The Stooges——技术上没什么是全新的，但 <em>阵营</em> 是新的。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #8A1C</div>
+          <div class="time">2 周前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@OPERATOR #2B5E 这个观点我接受。流派 = 技术 + 阵营，缺一不可。所以"数摇起点是 Slint" 这个说法不是错的，只是它隐含了"我们只关心后硬核谱系内部的发展"这个限定。一旦把 prog rock 也纳入视野，谱系图就完全是另一张。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #C3D9</div>
+          <div class="time">1 周前</div>
+        </div>
+        <div class="reply-body"><p>学到了。准备去补一下《Discipline》和《Fourth》两张专辑，有人能给个推荐顺序吗？我之前完全没听过 prog rock。</p></div>
+      </div></span> 回复</span>
+      <span class="stat"><span class="num">1432</span> 浏览</span>
+    </div>
+  </div>
+</section>
+
+<section class="thread-content-section">
+  <div class="container">
+    <article class="thread-content">
+<p>所有人都说 Slint《Spiderland》(1991) 是数摇起点。这个共识已经成了维基百科级别的"标准答案"。</p>
+<p>但我最近重听 King Crimson 1981 年的《Discipline》——这张专辑里：</p>
+<ul>
+<li><strong>《Frame by Frame》</strong> 用了 17/16 + 4/4 的复合拍号</li>
+<li><strong>《Discipline》</strong> 同名曲是 5/8 + 7/8 + 13/16 的组合</li>
+<li>两把吉他用<strong>互锁式 minimalism</strong> 演奏方法（Robert Fripp 与 Adrian Belew 各跑各的循环）</li>
+</ul>
+<p>这些技术后来在 90 年代美国数摇里被认为是"创新"——但 King Crimson 早做了整整十年。</p>
+<hr />
+<p>我的疑问：</p>
+<blockquote>
+<p>为什么数摇的"祖先"被普遍算作 Slint 而不是 King Crimson？</p>
+</blockquote>
+<p>几个可能的解释：</p>
+<ol>
+<li><strong>流派归属问题</strong> —— King Crimson 是 70 年代英国 prog rock 阵营的一员，他们的"复杂性"被认为是 prog 传统，不是"新东西"。</li>
+<li><strong>文化属性</strong> —— 数摇被视为美国后硬核的延伸，而 prog rock 在 90 年代美国独立圈是被 <em>鄙视</em> 的对象。Slint 那批人即使知道 King Crimson，也不太可能公开承认影响。</li>
+<li><strong>录音美学</strong> —— Spiderland 那种低保真、压抑、几乎像录音事故的质感，确实是 Crimson 没有的。这种 <em>声音</em> 上的反叛比节奏上的反叛更被记住。</li>
+</ol>
+<p>但我觉得这种"起点划分"本身就是粗暴的。<strong>数摇不是 Slint 发明的——它是被 Slint 重新命名 + 移植到一个新的文化身份里。</strong></p>
+<p>有人有不同看法吗？特别是研究 prog rock 的朋友，你们怎么看这个谱系问题？</p>
+    </article>
+  </div>
+</section>
+
+<section class="replies-section">
+  <div class="container">
+    <div class="replies-header">
+      <h2>样本回复</h2>
+      <span class="badge">▲ FIXTURE · 虚构</span>
+      <span class="count">6 replies</span>
+    </div>
+    <div class="reply-list">
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #4F22</div>
+          <div class="time">3 周前 · 已回复</div>
+        </div>
+        <div class="reply-body"><p>你忽略了一个更早的源头：<strong>Soft Machine 1971 年的《Fourth》</strong>。整张专辑全部都是不规则拍号 + 器乐 + 突变结构，比 Crimson《Discipline》还早十年。如果按你的逻辑追溯，最终会一路追到 50 年代的 Frank Zappa——这种"找祖先"的游戏没有终点。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #7F12</div>
+          <div class="time">3 周前</div>
+        </div>
+        <div class="reply-body"><p>其实 Slint 的吉他手 David Pajo 在采访里 <em>承认过</em> King Crimson 的影响。你可以去翻 1991 年那期 <em>Forced Exposure</em> 杂志。所以"Slint 没听过 KC"这个说法是错的——只是后来的乐评人为了把 Slint 包装成"全新流派"故意淡化了这条联系。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #4D52</div>
+          <div class="time">3 周前</div>
+        </div>
+        <div class="reply-body"><p>我觉得你的论点有道理但结论太极端了。Slint 之所以是"起点"，是因为他们的影响 <em>直接催生</em> 了后续整个流派——Don Caballero、Tortoise、June of 44 都明确说过受 Spiderland 影响。但这些人很少说"我们受 King Crimson 影响"。<strong>起点 ≠ 祖先。它是历史影响最密集的那个节点。</strong></p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OPERATOR #2B5E</div>
+          <div class="time">2 周前</div>
+        </div>
+        <div class="reply-body"><p>楼上说得好。补充一点：流派的"起点"很大程度上是个 <em>社会学</em> 问题而不是 <em>音乐学</em> 问题。同样的音乐元素，被不同的圈子接受、被不同的乐评人书写、被打包进不同的身份——就成了不同的流派。Slint 之于 KC 就像 punk 之于 The Stooges——技术上没什么是全新的，但 <em>阵营</em> 是新的。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #8A1C</div>
+          <div class="time">2 周前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@OPERATOR #2B5E 这个观点我接受。流派 = 技术 + 阵营，缺一不可。所以"数摇起点是 Slint" 这个说法不是错的，只是它隐含了"我们只关心后硬核谱系内部的发展"这个限定。一旦把 prog rock 也纳入视野，谱系图就完全是另一张。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #C3D9</div>
+          <div class="time">1 周前</div>
+        </div>
+        <div class="reply-body"><p>学到了。准备去补一下《Discipline》和《Fourth》两张专辑，有人能给个推荐顺序吗？我之前完全没听过 prog rock。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <div class="container">
+    <div class="comments-placeholder">
+      <div class="ph-label">
+      </p>
+
+      <!--
+        ====================================================================
+        FUTURE INTEGRATION · 未来部署 Cusdis 时的接入指南
+        ====================================================================
+
+        步骤 1: fork https://github.com/djyde/cusdis 部署到 Vercel
+        步骤 2: 配置 Vercel Postgres 数据库
+        步骤 3: 拿到你的 host URL 和 app_id
+        步骤 4: 把下面这段代码取消注释、替换占位符即可
+
+        <div id="cusdis_thread"
+             data-host="https://你的cusdis域名.vercel.app"
+             data-app-id="你的-app-id-uuid"
+             data-page-id="thread-001"
+             data-page-url="https://你的网站域名/discourse/slint-vs-king-crimson.html"
+             data-page-title="Slint 真的是「第一支数摇乐队」吗？前史里其实还有 King Crimson">
+        </div>
+        <script async defer src="https://你的cusdis域名.vercel.app/js/cusdis.es.js"></script>
+
+        ====================================================================
+      -->
+    </div>
+  </div>
+</section>
+
+<section class="back-nav">
+  <div class="container">
+    <a href="../discourse.html">← 返回讨论列表</a>
+  </div>
+</section>
+
+<script src="../shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+</script>
+
+</body>
+</html>

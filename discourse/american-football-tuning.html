@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>American Football《Never Meant》开头琶音的开放调弦是 FACGCE 还是 EADGBE？ · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 32px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero .crumbs a:hover { color: var(--acid); }
+
+  .thread-tag-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .thread-tag-pill.tech     { color: #d4ff3a; }
+  .thread-tag-pill.rec      { color: #67e8f9; }
+  .thread-tag-pill.debate   { color: #ff5b3a; }
+  .thread-tag-pill.share    { color: #f0abfc; }
+  .thread-tag-pill.live     { color: #fcd34d; }
+  .thread-tag-pill.archive  { color: #a3e635; }
+
+  .thread-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 920px;
+  }
+
+  .thread-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(232, 230, 221, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .thread-meta-bar .author { color: var(--acid); }
+  .thread-meta-bar .stat .num {
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ========== 帖子正文 ========== */
+  .thread-content-section {
+    padding: 64px 0;
+  }
+  .thread-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.9);
+  }
+  .thread-content p { margin-bottom: 20px; }
+  .thread-content h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(212, 255, 58, 0.2);
+    color: var(--paper);
+  }
+  .thread-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    color: var(--acid);
+  }
+  .thread-content strong { color: var(--acid); font-weight: 700; }
+  .thread-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .thread-content a {
+    color: var(--acid);
+    border-bottom: 1px solid rgba(212, 255, 58, 0.4);
+    transition: border-color 0.2s;
+  }
+  .thread-content a:hover { border-bottom-color: var(--acid); }
+  .thread-content ul, .thread-content ol {
+    padding-left: 28px;
+    margin-bottom: 20px;
+  }
+  .thread-content li { margin-bottom: 8px; }
+  .thread-content blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 12px 24px;
+    margin: 24px 0;
+    background: rgba(212, 255, 58, 0.04);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .thread-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+    border-radius: 2px;
+  }
+  .thread-content pre {
+    background: var(--ink-2);
+    border: 1px solid rgba(232, 230, 221, 0.1);
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .thread-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .thread-content table {
+    width: 100%;
+    margin: 24px 0;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .thread-content table th,
+  .thread-content table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .thread-content table th {
+    color: var(--acid);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 11px;
+  }
+  .thread-content hr {
+    border: 0;
+    border-top: 1px dashed rgba(232, 230, 221, 0.15);
+    margin: 36px 0;
+  }
+
+  /* ========== 样本回复 ========== */
+  .replies-section {
+    padding: 64px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .replies-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .replies-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .replies-header .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--signal);
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    text-transform: uppercase;
+  }
+  .replies-header .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+
+  .reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reply-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.08);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .reply-item { grid-template-columns: 180px 1fr; gap: 32px; }
+  }
+  .reply-item:last-child { border-bottom: 0; }
+  .reply-meta {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .reply-meta .author {
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .reply-meta .time {
+    font-size: 10px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .reply-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.85);
+  }
+  .reply-body p { margin-bottom: 12px; }
+  .reply-body p:last-child { margin-bottom: 0; }
+  .reply-body strong { color: var(--acid); }
+  .reply-body em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .reply-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    background: rgba(232, 230, 221, 0.08);
+    color: var(--acid);
+  }
+  .reply-body blockquote {
+    border-left: 2px solid var(--acid);
+    padding: 8px 18px;
+    margin: 12px 0;
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .reply-body ul, .reply-body ol { padding-left: 24px; }
+  .reply-body li { margin-bottom: 6px; }
+
+  /* ========== Cusdis 占位框 ========== */
+  .comments-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .comments-placeholder {
+    border: 1px dashed rgba(212, 255, 58, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 48px 32px;
+    position: relative;
+  }
+  .comments-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(212, 255, 58, 0.02) 12px,
+      rgba(212, 255, 58, 0.02) 24px
+    );
+    pointer-events: none;
+  }
+  .comments-placeholder .ph-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--signal);
+    margin-bottom: 12px;
+  }
+  .comments-placeholder h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .comments-placeholder p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(232, 230, 221, 0.7);
+    max-width: 580px;
+  }
+  .comments-placeholder p em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+
+  /* ========== 返回导航 ========== */
+  .back-nav {
+    padding: 32px 0 64px;
+    text-align: center;
+  }
+  .back-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    transition: color 0.2s;
+    padding: 12px 24px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+  }
+  .back-nav a:hover {
+    color: var(--acid);
+    border-color: var(--acid);
+  }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="../index.html">首页 / Index</a> &nbsp;/&nbsp;
+      <a href="../discourse.html">讨论 / Discourse</a> &nbsp;/&nbsp;
+      <span style="color: var(--acid);">american-football-tuning</span>
+    </div>
+    <span class="thread-tag-pill tech">技术</span>
+    <h1 class="thread-title">American Football《Never Meant》开头琶音的开放调弦是 FACGCE 还是 EADGBE？</h1>
+    <div class="thread-meta-bar">
+      <span class="author">LISTENER #6D33</span>
+      <span>2026-04-27 · 3 天前</span>
+      <span class="stat"><span class="num">      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #2E89</div>
+          <div class="time">3 天前</div>
+        </div>
+        <div class="reply-body"><p>我去年现场看过 American Football 在 Brooklyn 的演出，<strong>Mike Kinsella 用的是 FACGCE</strong>——我专门带望远镜看了他的把位。但 Steve Holmes（第二吉他）用的是另一种调弦，我看不太清楚。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #5C71</div>
+          <div class="time">3 天前</div>
+        </div>
+        <div class="reply-body"><p>FACGCE 在数摇里其实不算少见，TTNG 的 Tim Collis 也用过类似的调弦。这种调弦的好处是：1) 食指横按一根弦就能压出大三和弦 2) 开放弦本身就构成 F 大调的色彩 3) 双手点弦时低音不需要左手按。</p>
+<p>标准调弦版本 80% 还原是可能的，但你<strong>永远做不出来那种"开放弦在背景里持续震动"的氛围</strong>——那是这首歌的灵魂。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #B7A4</div>
+          <div class="time">2 天前</div>
+        </div>
+        <div class="reply-body"><p>推荐看一下 <em>Songsterr</em> 上的 tab，它们有专门标注调弦的 American Football 系列，比 Ultimate Guitar 上的版本准很多。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #1A2B</div>
+          <div class="time">2 天前</div>
+        </div>
+        <div class="reply-body"><p>补充考据：Kinsella 在 2019 年的 <em>Premier Guitar</em> 杂志专访里亲口说：</p>
+<blockquote>
+<p>"Most of LP1 is in some variation of open F tuning. Specifically FACGCE, which is what gives those songs that ringing quality."</p>
+</blockquote>
+<p>所以 FACGCE 是官方答案。但他也说 LP2 (2016) 之后他开始尝试别的调弦，所以不同时期的现场版本可能不同。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6D33</div>
+          <div class="time">2 天前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@ARCHIVIST #1A2B 太感谢了，这就是我要的源头确认。准备这就把吉他换成 FACGCE 来练。</p>
+<p>如果有谁有 Premier Guitar 那篇专访的完整 PDF，求分享。</p></div>
+      </div></span> 回复</span>
+      <span class="stat"><span class="num">324</span> 浏览</span>
+    </div>
+  </div>
+</section>
+
+<section class="thread-content-section">
+  <div class="container">
+    <article class="thread-content">
+<p>这首歌应该是数摇史上被翻弹最多的一首。但翻弹版本的开放调弦标注 <em>完全混乱</em>：</p>
+<ul>
+<li><strong>网上 tab 大部分</strong>写的是标准调弦 EADGBE 的变种（Drop D 之类）</li>
+<li><strong>Mike Kinsella 自己的吉他课视频</strong>里他用的是 <strong>FACGCE</strong></li>
+<li><strong>YouTube 上某些"教学"视频</strong>说是 EADEAE</li>
+<li><strong>Justin Guitar 的版本</strong>用了完全不同的指法、号称是 EADGBE 标准调弦</li>
+</ul>
+<p>谁是对的？</p>
+<hr />
+<p>我的判断（不一定准）：</p>
+<p>我反复对比录音和视频里的指型，<strong>FACGCE</strong> 听起来最接近原版——尤其是开头那个开放和弦的泛音残留特征，标准调弦无论怎么按都做不出来。</p>
+<p>但奇怪的是：</p>
+<blockquote>
+<p>如果原版真是 FACGCE，为什么这么多人用标准调弦也能弹出"差不多"的版本？</p>
+</blockquote>
+<p>我猜测：<strong>Kinsella 的开放调弦让某些音符变成了开放弦的自然泛音，标准调弦下需要按出来——音色不同但音高一致。</strong> 听感差别 90% 在录音师 + 吉他本身（半空心 ES-335），调弦只占 10%。</p>
+<hr />
+<p>求确认：</p>
+<ol>
+<li>有没有人 <em>亲自</em> 看过 Kinsella 现场弹这首？现场用什么调弦？</li>
+<li>1999 年 LP1 录音时和 2014/2016 重组后的现场版本，调弦一致吗？</li>
+<li>如果我用标准调弦弹，能做到 80% 还原度吗？</li>
+</ol>
+<p>求大佬指点。</p>
+    </article>
+  </div>
+</section>
+
+<section class="replies-section">
+  <div class="container">
+    <div class="replies-header">
+      <h2>样本回复</h2>
+      <span class="badge">▲ FIXTURE · 虚构</span>
+      <span class="count">5 replies</span>
+    </div>
+    <div class="reply-list">
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #2E89</div>
+          <div class="time">3 天前</div>
+        </div>
+        <div class="reply-body"><p>我去年现场看过 American Football 在 Brooklyn 的演出，<strong>Mike Kinsella 用的是 FACGCE</strong>——我专门带望远镜看了他的把位。但 Steve Holmes（第二吉他）用的是另一种调弦，我看不太清楚。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">OBSERVER #5C71</div>
+          <div class="time">3 天前</div>
+        </div>
+        <div class="reply-body"><p>FACGCE 在数摇里其实不算少见，TTNG 的 Tim Collis 也用过类似的调弦。这种调弦的好处是：1) 食指横按一根弦就能压出大三和弦 2) 开放弦本身就构成 F 大调的色彩 3) 双手点弦时低音不需要左手按。</p>
+<p>标准调弦版本 80% 还原是可能的，但你<strong>永远做不出来那种"开放弦在背景里持续震动"的氛围</strong>——那是这首歌的灵魂。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #B7A4</div>
+          <div class="time">2 天前</div>
+        </div>
+        <div class="reply-body"><p>推荐看一下 <em>Songsterr</em> 上的 tab，它们有专门标注调弦的 American Football 系列，比 Ultimate Guitar 上的版本准很多。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">ARCHIVIST #1A2B</div>
+          <div class="time">2 天前</div>
+        </div>
+        <div class="reply-body"><p>补充考据：Kinsella 在 2019 年的 <em>Premier Guitar</em> 杂志专访里亲口说：</p>
+<blockquote>
+<p>"Most of LP1 is in some variation of open F tuning. Specifically FACGCE, which is what gives those songs that ringing quality."</p>
+</blockquote>
+<p>所以 FACGCE 是官方答案。但他也说 LP2 (2016) 之后他开始尝试别的调弦，所以不同时期的现场版本可能不同。</p></div>
+      </div>
+      <div class="reply-item">
+        <div class="reply-meta">
+          <div class="author">LISTENER #6D33</div>
+          <div class="time">2 天前 · 楼主</div>
+        </div>
+        <div class="reply-body"><p>@ARCHIVIST #1A2B 太感谢了，这就是我要的源头确认。准备这就把吉他换成 FACGCE 来练。</p>
+<p>如果有谁有 Premier Guitar 那篇专访的完整 PDF，求分享。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <div class="container">
+    <div class="comments-placeholder">
+      <div class="ph-label">
+      </p>
+
+      <!--
+        ====================================================================
+        FUTURE INTEGRATION · 未来部署 Cusdis 时的接入指南
+        ====================================================================
+
+        步骤 1: fork https://github.com/djyde/cusdis 部署到 Vercel
+        步骤 2: 配置 Vercel Postgres 数据库
+        步骤 3: 拿到你的 host URL 和 app_id
+        步骤 4: 把下面这段代码取消注释、替换占位符即可
+
+        <div id="cusdis_thread"
+             data-host="https://你的cusdis域名.vercel.app"
+             data-app-id="你的-app-id-uuid"
+             data-page-id="thread-002"
+             data-page-url="https://你的网站域名/discourse/american-football-tuning.html"
+             data-page-title="American Football《Never Meant》开头琶音的开放调弦是 FACGCE 还是 EADGBE？">
+        </div>
+        <script async defer src="https://你的cusdis域名.vercel.app/js/cusdis.es.js"></script>
+
+        ====================================================================
+      -->
+    </div>
+  </div>
+</section>
+
+<section class="back-nav">
+  <div class="container">
+    <a href="../discourse.html">← 返回讨论列表</a>
+  </div>
+</section>
+
+<script src="../shared/core.js"></script>
+<script>
+  initPage('discourse.html');
+</script>
+
+</body>
+</html>

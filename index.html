@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>复拍 POLYMETER · 数学摇滚田野指南</title>
+<meta name="description" content="一份关于数学摇滚（Math Rock）的开放档案——它的历史、它的理论，它奇异而美丽的算术。">
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  /* ========== 首页专属样式 ========== */
+  .hero {
+    position: relative;
+    padding: 128px 0 96px;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+    padding-bottom: 12px;
+    margin-bottom: 48px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+  }
+  @media (min-width: 1024px) {
+    .hero-grid { grid-template-columns: 7fr 5fr; gap: 32px; }
+  }
+  .hero-live {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--acid);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.2em;
+  }
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    display: grid;
+    grid-template-columns: max-content auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.15em 0.4em;
+    width: max-content;
+    max-width: 100%;
+    font-size: clamp(2.5rem, 7vw, 7rem);
+  }
+  .hero-title .ch {
+    display: block;
+    line-height: 0.9;
+  }
+  /* 声 音 同一行（第 1 行，跨两列） */
+  .hero-title .row-top {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    gap: 0.15em;
+  }
+  /* 算 独占一行（第 2 行第 1 列） */
+  .hero-title .ch.s3 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  /* 术 第 3 行第 1 列 */
+  .hero-title .ch.s4 {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  /* 英文贴在术右侧、底部对齐 */
+  .hero-title .en-inline {
+    grid-column: 2;
+    grid-row: 3;
+    align-self: end;
+    padding-left: 0.25em;
+    padding-bottom: 0.08em;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1rem, 2vw, 2rem);
+    color: var(--paper-dim);
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0;
+  }
+  .hero-title .ch.acid {
+    color: var(--acid);
+  }
+  /* 旧的样式保留以防其他地方引用 */
+  .hero-title-en { display: none; }
+  @media (max-width: 768px) {
+    .hero-title {
+      grid-template-columns: max-content;
+    }
+    .hero-title .en-inline {
+      grid-column: 1;
+      grid-row: 4;
+      padding-left: 0;
+      padding-top: 0.4em;
+      font-size: 1.4rem;
+      white-space: normal;
+    }
+  }
+  .hero-lead {
+    margin-top: 36px;
+    max-width: 540px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .hero-lead .acid { color: var(--acid); font-weight: 700; }
+  .hero-lead em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .hero-cta {
+    margin-top: 44px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ========== 示波器面板 ========== */
+  .oscilloscope {
+    border: 1px solid rgba(212, 255, 58, 0.3);
+    background: var(--ink-2);
+    padding: 16px;
+    position: relative;
+  }
+  .osc-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 8px;
+  }
+  .osc-rec {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .osc-footer {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(212, 255, 58, 0.6);
+    margin-top: 8px;
+  }
+  .osc-meter-tabs {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .osc-meter-tabs button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgba(232, 230, 221, 0.15);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    transition: all 0.15s;
+  }
+  .osc-meter-tabs button.active {
+    background: var(--acid);
+    color: var(--ink);
+    border-color: var(--acid);
+  }
+  .osc-meter-tabs button:hover:not(.active) {
+    border-color: var(--acid);
+    color: var(--acid);
+  }
+
+  /* ========== 数据带 ========== */
+  .stat-strip {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    padding-top: 32px;
+  }
+  @media (min-width: 768px) {
+    .stat-strip { grid-template-columns: repeat(4, 1fr); }
+  }
+  .stat-strip .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--paper-dim); }
+  .stat-strip .value {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 28px;
+    margin-top: 10px;
+    line-height: 1.1;
+  }
+  .stat-strip .value-en {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    margin-top: 6px;
+  }
+  .stat-strip .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--paper-dim);
+    margin-top: 4px;
+  }
+
+  /* ========== 引文 / 介绍区 ========== */
+  .intro-section {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    margin-top: 72px;
+  }
+  @media (min-width: 1024px) {
+    .intro-grid { grid-template-columns: 5fr 7fr; }
+  }
+  .intro-quote {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 300;
+    font-size: clamp(1.3rem, 2.4vw, 2rem);
+    line-height: 1.6;
+    border-left: 2px solid var(--acid);
+    padding-left: 24px;
+  }
+  .intro-quote em { color: var(--acid); font-style: normal; font-weight: 700; }
+  .intro-quote-en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--paper-dim);
+    margin-top: 24px;
+  }
+  .intro-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: rgba(232, 230, 221, 0.1);
+  }
+  @media (min-width: 640px) {
+    .intro-cards { grid-template-columns: 1fr 1fr; }
+  }
+  .intro-card {
+    background: var(--ink);
+    padding: 32px 24px;
+    transition: background 0.3s;
+  }
+  .intro-card:hover { background: var(--ink-2); }
+  .intro-card .num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    color: var(--acid);
+    line-height: 1;
+  }
+  .intro-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-top: 12px;
+  }
+  .intro-card .en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--paper-dim);
+    margin-top: 4px;
+  }
+  .intro-card p {
+    font-size: 14px;
+    margin-top: 16px;
+    color: rgba(232, 230, 221, 0.7);
+    line-height: 1.7;
+  }
+
+  /* ========== 核心特质详解（traits） ========== */
+  .traits {
+    padding: 96px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+    background: var(--ink-2);
+  }
+  .trait-list {
+    margin-top: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(232, 230, 221, 0.1);
+  }
+  .trait-row {
+    background: var(--ink);
+    padding: 48px 32px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    transition: background 0.3s;
+  }
+  @media (min-width: 1024px) {
+    .trait-row { grid-template-columns: 80px 1fr 2fr; gap: 48px; padding: 56px 40px; }
+  }
+  .trait-row:hover { background: #000; }
+  .trait-row .glyph {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    color: var(--acid);
+    line-height: 1;
+    font-style: italic;
+  }
+  .trait-row .heading h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .trait-row .heading .en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--paper-dim);
+    margin-top: 8px;
+  }
+  .trait-row .heading .alias {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--acid);
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(212, 255, 58, 0.2);
+  }
+  .trait-row .body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .trait-row .body p { margin-bottom: 14px; }
+  .trait-row .body p:last-child { margin-bottom: 0; }
+  .trait-row .body em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--paper);
+  }
+  .trait-row .body strong {
+    color: var(--acid);
+    font-weight: 700;
+  }
+  .trait-row .example {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-left: 2px solid var(--acid);
+    background: rgba(212, 255, 58, 0.04);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.7);
+  }
+  .trait-row .example .label {
+    color: var(--acid);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HERO ========== -->
+<section class="hero grid-bg scanlines">
+  <div class="container">
+    <div class="hero-meta">
+      <span>第一卷 / Vol.01 </span>
+      <span class="hidden-mobile"></span>
+      <span>采样率 44.1 kHz</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <div class="hero-live">
+          <span class="pulse-dot"></span>
+          实时传输 · LIVE TRANSMISSION · 流派编号 0x4D52
+        </div>
+        <h1 class="hero-title">
+          <span class="row-top">
+            <span class="ch s1">声</span>
+            <span class="ch s2">音</span>
+          </span>
+          <span class="ch s3 acid">算</span>
+          <span class="ch s4 acid">术</span>
+          <span class="en-inline">— the arithmetic of voice</span>
+        </h1>
+        <p class="hero-lead">
+          数学摇滚（<em>Math Rock</em>），是当吉他手把<span class="acid">拍号</span>当作创作变量时所发生的事。不规则的节拍、复合的节奏、双手点弦的琶音——这是一种<em>测量</em>自己脉搏的音乐流派。
+        </p>
+        <div class="hero-cta">
+          <a href="anatomy.html" class="btn-primary">了解技术 / Begin transmission →</a>
+          <a href="history.html" class="btn-ghost">阅读历史 / Field notes</a>
+        </div>
+      </div>
+
+      <!-- 示波器 -->
+      <div>
+        <div class="oscilloscope" id="oscilloscope">
+          <div class="osc-header">
+            <span>OSC · CH-01</span>
+            <span id="osc-meter-name">METER 7/8</span>
+            <span class="osc-rec"><span class="signal-dot"></span>REC</span>
+          </div>
+          <svg viewBox="0 0 480 320" id="osc-svg" style="width:100%; height:auto; display:block;">
+            <g id="osc-grid"></g>
+            <line x1="0" y1="160" x2="480" y2="160" stroke="var(--acid)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+            <polyline id="osc-wave" fill="none" stroke="var(--acid)" stroke-width="1.5" style="filter: drop-shadow(0 0 6px var(--acid));"/>
+            <g id="osc-markers"></g>
+          </svg>
+          <div class="osc-footer">
+            <span>0 ms</span>
+            <span id="osc-time">Δt: 0 ms</span>
+            <span id="osc-total">1400 ms</span>
+          </div>
+          <div class="osc-meter-tabs" id="osc-tabs"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据带 -->
+    <div class="stat-strip">
+      <div>
+        <div class="label">平均速度 · Avg. BPM</div>
+        <div class="value-en">138.2</div>
+      </div>
+      <div>
+        <div class="label">常见拍号 · Common Meter</div>
+        <div class="value-en">7/8</div>
+      </div>
+      <div>
+        <div class="label">核心技术 · Key Technique</div>
+        <div class="value">双手点弦</div>
+        <div class="sub">two-hand tap</div>
+      </div>
+      <div>
+        <div class="label">起源 · Origin</div>
+        <div class="value">1985</div>
+        <div class="sub">Chicago, IL</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 跑马灯 ========== -->
+<div class="marquee">
+  <div class="marquee-track" id="marquee-track"></div>
+</div>
+
+<!-- ========== 引文 / 介绍 ========== -->
+<section class="intro-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">01</span>
+      <div>
+        <h2>什么是数学摇滚？</h2>
+        <div class="subtitle-en">What is math rock, exactly?</div>
+      </div>
+    </div>
+
+    <div class="intro-grid">
+      <blockquote class="intro-quote">
+        "如果摇滚乐是<em>心跳</em>，那么数学摇滚就是把心跳画成了<em>函数图像</em>——它不仅在跳动，还在记录自己跳动的<em>方式</em>。"
+        <div class="intro-quote-en">— Polymeter editorial, on what makes math rock <em>math</em></div>
+      </blockquote>
+
+      <div class="intro-cards">
+        <div class="intro-card">
+          <div class="num">α</div>
+          <h3>不规则拍号</h3>
+          <div class="en">Irregular Time Signatures</div>
+          <p>抛弃标准的 4/4 拍，用 7/8、5/4、11/8 等"奇数"拍号制造听觉上的失重感。每一小节的节拍数都可能与上一小节不同。</p>
+        </div>
+        <div class="intro-card">
+          <div class="num">β</div>
+          <h3>复合节奏</h3>
+          <div class="en">Polyrhythm & Polymeter</div>
+          <p>两个声部以不同的拍号同时演奏（如 3 对 4），制造出"齿轮咬合"般的张力感。这是数学摇滚最具辨识度的纹理。</p>
+        </div>
+        <div class="intro-card">
+          <div class="num">γ</div>
+          <h3>双手点弦</h3>
+          <div class="en">Two-Hand Tapping</div>
+          <p>左右手同时在指板上敲击，产生类似钢琴的清亮音色与高密度音符。American Football 与 CHON 是这一技术的代表。</p>
+        </div>
+        <div class="intro-card">
+          <div class="num">δ</div>
+          <h3>器乐为主</h3>
+          <div class="en">Instrumental Focus</div>
+          <p>大多数数学摇滚作品没有人声，或人声只作为乐器使用。这让节奏与和声本身成为叙事主角，是一种"器乐的文学"。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 核心特质详解 ========== -->
+<section class="traits">
+  <div class="container">
+    <div class="section-header">
+      <span class="num">02</span>
+      <div>
+        <h2>核心特质 · 详细定义</h2>
+        <div class="subtitle-en">Core traits · what makes math rock <em>math</em></div>
+      </div>
+    </div>
+
+    <div class="trait-list" id="trait-list"></div>
+  </div>
+</section>
+
+<script src="shared/core.js"></script>
+<script>
+  // 初始化页面
+  initPage('index.html');
+
+  // ========== 跑马灯 ==========
+  (function() {
+    const track = document.getElementById('marquee-track');
+    const items = window.BANDS.concat(window.BANDS).map(b => `
+      <span class="marquee-item">
+        <span class="dim">◆</span>
+        ${b.name}
+        <span class="dim">/${b.year}/</span>
+        <span class="dim">${b.country}</span>
+      </span>
+    `).join('');
+    track.innerHTML = items;
+  })();
+
+  // ========== 示波器 ==========
+  (function() {
+    let activeMeter = 1;  // 默认 7/8
+    const w = 480, h = 320;
+    const meters = window.METERS;
+
+    const tabsEl = document.getElementById('osc-tabs');
+    tabsEl.innerHTML = meters.map((m, i) =>
+      `<button data-i="${i}" class="${i === activeMeter ? 'active' : ''}">${m.name}</button>`
+    ).join('');
+    tabsEl.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeMeter = parseInt(btn.dataset.i);
+        tabsEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMarkers();
+      });
+    });
+
+    // 网格线
+    const gridEl = document.getElementById('osc-grid');
+    let gridHTML = '';
+    for (let i = 0; i < 8; i++) gridHTML += `<line x1="0" x2="${w}" y1="${(h/8)*i}" y2="${(h/8)*i}" stroke="var(--acid)" stroke-opacity="0.1"/>`;
+    for (let i = 0; i < 12; i++) gridHTML += `<line y1="0" y2="${h}" x1="${(w/12)*i}" x2="${(w/12)*i}" stroke="var(--acid)" stroke-opacity="0.1"/>`;
+    gridEl.innerHTML = gridHTML;
+
+    // 拍号标记
+    const markersEl = document.getElementById('osc-markers');
+    function renderMarkers() {
+      const m = meters[activeMeter];
+      let mh = '';
+      for (let i = 0; i < m.total; i++) {
+        const x = (w / m.total) * i;
+        const isAccent = m.accent.includes(i);
+        const color = isAccent ? 'var(--signal)' : 'var(--acid)';
+        const op = isAccent ? '0.4' : '0.15';
+        mh += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="${color}" stroke-opacity="${op}"/>`;
+        mh += `<text x="${x+4}" y="14" fill="${color}" font-size="9" font-family="JetBrains Mono">${i+1}</text>`;
+      }
+      markersEl.innerHTML = mh;
+      document.getElementById('osc-meter-name').textContent = `METER ${m.name}`;
+      document.getElementById('osc-total').textContent = `${m.total * 200} ms`;
+    }
+    renderMarkers();
+
+    // 波形
+    const wave = document.getElementById('osc-wave');
+    const timeEl = document.getElementById('osc-time');
+    window.subscribeTick((tick) => {
+      const m = meters[activeMeter];
+      const points = [];
+      for (let x = 0; x < w; x++) {
+        const phase = (x / w) * m.total;
+        const beat = Math.floor(phase) % m.total;
+        const accent = m.accent.includes(beat) ? 1.4 : 0.6;
+        const wv = Math.sin((x / w) * Math.PI * 2 * m.total + tick * 0.1) * 40 * accent
+                 + Math.sin((x / w) * Math.PI * 2 * m.total * 3 + tick * 0.05) * 12;
+        points.push(`${x},${h/2 + wv}`);
+      }
+      wave.setAttribute('points', points.join(' '));
+      timeEl.textContent = `Δt: ${(tick * 80) % 1000} ms`;
+    });
+  })();
+
+  // ========== 核心特质详解 ==========
+  (function() {
+    const traits = [
+      {
+        glyph: 'α',
+        zh: '不规则拍号',
+        en: 'Irregular Time Signatures',
+        alias: 'odd meter · asymmetric meter',
+        body: `
+          <p>大多数摇滚乐建立在 <strong>4/4 拍</strong> 之上——四个等长的强拍，可预测、可跟随、可踩节奏。数学摇滚的第一个反叛就是<em>放弃这种可预测性</em>：用 5/4、7/8、11/8、13/8 等"奇数"拍号制造听觉上的失重。</p>
+          <p>它们之所以"奇怪"，是因为没办法被对称地切分。一个 7/8 拍小节通常被分成 <strong>3+2+2</strong> 或 <strong>2+2+3</strong>，每种分组都让你的脚踩不到正点上。听众只能"感觉"到循环的回归，而不是数清楚。</p>
+          <p>更进一步：很多数摇曲目<em>不只用一个拍号</em>。一段 7/8 之后可能突然跳到 5/4、再回到 4/4，这种快速换拍称为 <strong>metric modulation</strong>（拍速调制）。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>Don Caballero《Stupid Puma》开头的鼓 pattern，是 7/8 拍的教科书示例。`
+      },
+      {
+        glyph: 'β',
+        zh: '复合节奏',
+        en: 'Polyrhythm & Polymeter',
+        alias: 'cross-rhythm · rhythmic counterpoint',
+        body: `
+          <p><strong>复节奏（polyrhythm）</strong>是同一时间内，两个不同分组的节奏并行——比如一手打 3 拍，另一手打 4 拍。这两个节奏只在特定时刻"对齐"，其他时刻互相错位，制造出"齿轮咬合"般的张力。</p>
+          <p><strong>复拍号（polymeter）</strong>则更进一步：吉他在 7/8 拍循环，鼓却在 4/4 拍循环。两条声部各走各的，每隔几小节才碰一次——这种纹理就是"polymeter"网站名字的来源。</p>
+          <p>区别记忆：复节奏 = <em>同样的小节长度，不同的内部分组</em>；复拍号 = <em>不同的小节长度同时进行</em>。听感上前者像"两人共舞"，后者像"两个时钟"。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>Battles《Atlas》——鼓在 4/4，吉他循环却是 5 拍长，两者每 5 个小节才同步一次。`
+      },
+      {
+        glyph: 'γ',
+        zh: '双手点弦',
+        en: 'Two-Hand Tapping',
+        alias: 'fingertapping · piano-style guitar',
+        body: `
+          <p>常规吉他演奏中，左手按弦、右手弹拨。<strong>双手点弦</strong>则是两只手都在指板上敲击琴弦——通过"点击"产生声音，而不是"拨动"。结果是一种类似<em>钢琴</em>的清亮音色，能够同时演奏多条独立旋律线。</p>
+          <p>这个技术在 1980 年代由 Eddie Van Halen 推向主流，但数学摇滚把它<em>重新发明</em>了——不再是炫技独奏，而是用来构筑整首曲子的织体。American Football 的清音点弦像水滴；CHON 的点弦像爵士钢琴；Standards 的 Marcos Mena 则用一把吉他同时打出贝斯线和主旋律。</p>
+          <p>许多数摇吉他手会使用<strong>开放和弦调弦</strong>（open tuning）来让点弦更容易奏响和声，这也是为什么这类音乐的吉他听起来格外"明亮、有空间感"。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>Standards《Pineapple》——一把吉他、一台鼓，听起来却像四件乐器同时演奏。`
+      },
+      {
+        glyph: 'δ',
+        zh: '器乐主导',
+        en: 'Instrumental Focus',
+        alias: 'voiceless rock · post-vocal',
+        body: `
+          <p>大部分数摇作品<em>没有人声</em>，或人声只作为"另一件乐器"使用。这是流派的一个重要美学决定：当节奏与和声本身就足够复杂、足够有故事，<strong>歌词反而会成为干扰</strong>。</p>
+          <p>器乐数摇要求听众"听结构"而不是"听内容"——一首 6 分钟的曲子可能经历 8 次拍号变化、3 次调性转移、4 个截然不同的段落，每一次变化都是叙事的转折。这是一种<em>抽象的文学</em>。</p>
+          <p>例外当然存在：Slint、tricot、TTNG 都有人声，但人声往往以喃喃自语、念白、或断片式短句出现，<em>避免</em>传统流行乐的"主歌-副歌-主歌"结构。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>toe《グッドバイ》——只有吉他、鼓、钢琴，却讲完了一个完整的离别故事。`
+      },
+      {
+        glyph: 'ε',
+        zh: '突变结构',
+        en: 'Abrupt Transitions',
+        alias: 'gear-shift · stop-start dynamics',
+        body: `
+          <p>流行乐有过渡段（bridge）来连接主歌和副歌。数学摇滚<em>拒绝过渡</em>——一段平静的清音琶音会突然被失真墙壁打断，再瞬间回到静谧。这种"断裂感"是流派的标志。</p>
+          <p>这种结构借鉴自 1990 年代的 <strong>post-hardcore</strong> 与 <strong>post-rock</strong>，被 Slint 在《Spiderland》中推到极致："quiet-loud-quiet"的动态对比成为数摇剧本的母题。</p>
+          <p>当代数摇把这种突变内化为<em>更细的颗粒</em>：不是"安静段-爆发段"的二元切换，而是每隔 4-8 小节就完全换一个音乐想法，像电影剪辑般跳跃。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>Slint《Good Morning, Captain》——9 分钟里发生了 5 次完全的情绪转向。`
+      },
+      {
+        glyph: 'ζ',
+        zh: '清音美学',
+        en: 'Clean Tone Aesthetic',
+        alias: 'unfx · transparent guitar',
+        body: `
+          <p>金属乐用失真，朋克乐用 fuzz，shoegaze 用混响——而数学摇滚<em>选择极少加效果</em>的清音吉他。每一个音符都清晰可辨，每一次按弦的杂音都被听见。这是一种<em>透明性</em>的追求。</p>
+          <p>原因很实用：当你要演奏 11/8 拍 + 双手点弦 + 复节奏的同时，再叠加失真音墙，听众的耳朵会被噪音淹没，复杂的结构会变成一团模糊。<strong>清音保留了结构</strong>。</p>
+          <p>例外是 2010 年代之后的"重型数摇"分支（Tera Melos、ASIWYFA、Battles），他们重新引入大量效果器，但仍保持每一层都<em>能被独立听见</em>——这是数摇与一般失真摇滚的根本区别。</p>
+        `,
+        example: `<span class="label">// 听这个：</span>American Football《Never Meant》开场的清音琶音——没有任何效果器，纯粹的指尖。`
+      },
+    ];
+    document.getElementById('trait-list').innerHTML = traits.map(t => `
+      <div class="trait-row">
+        <div class="glyph">${t.glyph}</div>
+        <div class="heading">
+          <h3>${t.zh}</h3>
+          <div class="en">${t.en}</div>
+          <div class="alias">${t.alias}</div>
+        </div>
+        <div class="body">
+          ${t.body}
+          <div class="example">${t.example}</div>
+        </div>
+      </div>
+    `).join('');
+  })();
+</script>
+
+</body>
+</html>

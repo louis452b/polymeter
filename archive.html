@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乐队 · 复拍 POLYMETER</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  .page-hero {
+    padding: 152px 0 64px;
+    border-bottom: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .page-hero .crumbs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    margin-bottom: 32px;
+  }
+  .page-hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .page-hero h1 .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.32em;
+    color: var(--paper-dim);
+    margin-top: 0.4em;
+  }
+  .page-hero .lead {
+    margin-top: 32px;
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+
+  /* ========== 流派分类章节 ========== */
+  .scene-section {
+    padding: 80px 0;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .scene-section:nth-child(even) {
+    background: var(--ink-2);
+  }
+  .scene-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  @media (min-width: 1024px) { .scene-meta { grid-template-columns: 5fr 7fr; gap: 64px; } }
+  .scene-num {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 12px;
+  }
+  .scene-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .scene-title .en {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.4em;
+    color: var(--paper-dim);
+    margin-top: 6px;
+  }
+  .scene-stats {
+    margin-top: 20px;
+    display: flex;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--paper-dim);
+  }
+  .scene-stats .label { color: var(--acid); margin-right: 6px; }
+  .scene-desc {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(232, 230, 221, 0.78);
+  }
+  .scene-desc p { margin-bottom: 12px; }
+  .scene-desc strong { color: var(--acid); }
+  .scene-desc em { font-family: 'Fraunces', serif; font-style: italic; color: var(--paper); }
+  .scene-desc:last-child p:last-child { margin-bottom: 0; }
+
+  /* ========== 乐队卡片（每个流派下） ========== */
+  .band-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: rgba(232, 230, 221, 0.1);
+  }
+  @media (min-width: 768px) { .band-grid { grid-template-columns: 1fr 1fr; } }
+  .band-card {
+    background: var(--ink);
+    padding: 36px 32px;
+    transition: background 0.3s;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+  .scene-section:nth-child(even) .band-card { background: var(--ink-2); }
+  .band-card:hover { background: #000; }
+  .band-card .wave {
+    width: 100%;
+    height: 36px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  .band-card:hover .wave { opacity: 1; }
+  .band-card .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(232, 230, 221, 0.4);
+    margin-bottom: 12px;
+  }
+  .band-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .band-card .en-name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--paper-dim);
+    margin-bottom: 16px;
+  }
+  .band-card .info-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(232, 230, 221, 0.6);
+    margin-bottom: 16px;
+  }
+  .band-card .album-block {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(232, 230, 221, 0.1);
+  }
+  .band-card .album-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 6px;
+  }
+  .band-card .album-name {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  .band-card .album-name .en {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--paper-dim);
+    display: block;
+    margin-top: 2px;
+  }
+  .band-card .desc {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(232, 230, 221, 0.7);
+  }
+  .band-card .arrow {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(232, 230, 221, 0.3);
+    transition: color 0.2s;
+  }
+  .band-card:hover .arrow { color: var(--acid); }
+</style>
+</head>
+<body>
+
+<section class="page-hero grid-bg">
+  <div class="container">
+    <div class="crumbs">
+      <a href="index.html">首页 / Index</a> &nbsp;/&nbsp; <span style="color: var(--acid);">乐队 / Archive</span>
+    </div>
+    <h1>
+      乐队 · 谱系
+      <span class="en">— a taxonomy of math rock</span>
+    </h1>
+    <p class="lead">
+      数学摇滚不是一片均质的森林——它有<strong style="color: var(--acid);">六个亚种</strong>，按地理与年代分。每个亚种有自己的祖先、领头乐队和代表专辑。从 1986 年路易维尔的第一波到 2020 年代的卧室时代，这是一份谱系图。
+    </p>
+  </div>
+</section>
+
+<div id="scenes-container"></div>
+
+<script src="shared/core.js"></script>
+<script>
+  initPage('archive.html');
+
+  // ========== 六大流派分类 ==========
+  const SCENES = [
+    {
+      num: '01',
+      zh: '美国第一波先驱',
+      en: 'First-Wave American Pioneers',
+      era: '1986 — 1998',
+      region: '美国 · 路易维尔 / 芝加哥 / 匹兹堡',
+      desc: `
+        <p>数学摇滚的起源地。这一代乐队从<strong>后硬核（post-hardcore）</strong>与<em>no-wave</em> 中分化出来，强调不规则节奏、低保真录音、突变结构。他们的作品至今仍然定义着这个流派的"严肃"一极——黑暗、冷峻、智识化。</p>
+        <p>这一波几乎都是<em>器乐为主</em>，少有人声，且多与 Touch and Go、Quarterstick 等独立厂牌签约。Slint《Spiderland》是这场运动的"圣经"。</p>
+      `,
+      bands: [
+        {
+          zh: '斯林特', en: 'Slint',
+          year: 1986, country: '美国 · 路易维尔',
+          color: '#d4ff3a',
+          album: { zh: '《蛛地》', en: 'Spiderland', year: 1991 },
+          desc: '数摇奠基之作。低保低吼、quiet-loud-quiet 的动态对比、5/4 与 7/8 拍——后世几乎所有数摇专辑都有它的影子。'
+        },
+        {
+          zh: '堂 · 骑兵', en: 'Don Caballero',
+          year: 1991, country: '美国 · 匹兹堡',
+          color: '#ff5b3a',
+          album: { zh: '《美国堂》', en: 'American Don', year: 2000 },
+          desc: 'Damon Che 的鼓被誉为"数摇最伟大的鼓"。器乐、暴烈、技术性极高——本网站名 POLYMETER 的灵感即来自他们的曲名。'
+        },
+      ]
+    },
+    {
+      num: '02',
+      zh: '中西部情绪数摇',
+      en: 'Midwest Emo Math',
+      era: '1996 — 2003',
+      region: '美国 · 伊利诺伊 / 印第安纳',
+      desc: `
+        <p>第一波的"温柔"分支。这一代把数摇的复杂节奏与<strong>情绪核（emo）</strong>的内省气质融合，去掉了暴烈感，加入了<em>清音琶音、闪烁的吉他、青春的失落</em>。地理上集中在美国中西部的小镇与大学城，因此被称为"Midwest Emo"。</p>
+        <p>这一波最大的贡献是把数摇从"知识分子的玩具"变成了"卧室里的私语"——后来的整个二人吉他乐队潮（Floral、Standards）都建立在这个基础上。</p>
+      `,
+      bands: [
+        {
+          zh: '美式足球', en: 'American Football',
+          year: 1997, country: '美国 · 厄巴纳',
+          color: '#d4ff3a',
+          album: { zh: '《同名首专》', en: 'American Football (LP1)', year: 1999 },
+          desc: '《Never Meant》的开场琶音可能是数摇史上被翻弹最多的一段。开放调弦 + 双手点弦 + 喇叭，定义了"中西部之声"。'
+        },
+        {
+          zh: '矿物', en: 'Mineral',
+          year: 1994, country: '美国 · 德克萨斯',
+          color: '#ff5b3a',
+          album: { zh: '《Power of Failing》', en: 'The Power of Failing', year: 1997 },
+          desc: '介于 emo 与数摇之间。结构上比 American Football 更接近摇滚，但同样使用大量 7/8 与 6/4 切换。'
+        },
+      ]
+    },
+    {
+      num: '03',
+      zh: '日本数摇',
+      en: 'Japanese Math Rock',
+      era: '2000 — 至今',
+      region: '日本 · 东京 / 大阪',
+      desc: `
+        <p>2000 年后数摇的中心从美国转向了日本。日式数摇受到<strong>爵士乐、后摇、city pop</strong> 共同影响——节奏依然复杂，但<em>气质更安静、更克制</em>。toe 是这场运动的旗舰，他们用钢琴 + 吉他 + 鼓的编制，几乎重新发明了"器乐数摇"的可能性。</p>
+        <p>2010 年代之后，tricot 等乐队为日本数摇加入了<strong>女声 + 流行旋律</strong>，让这个流派第一次拥有了大众吸引力。</p>
+      `,
+      bands: [
+        {
+          zh: '脚趾', en: 'toe',
+          year: 2000, country: '日本 · 东京',
+          color: '#d4ff3a',
+          album: { zh: '《关于我闲散哲学的书》', en: 'The Book About My Idle Plot on a Vague Anxiety', year: 2005 },
+          desc: '日式数摇的世界级名片。《グッドバイ》是入门必听——吉他 + 钢琴 + 鼓，用最少的元素讲完最完整的故事。'
+        },
+        {
+          zh: 'tricot', en: 'tricot',
+          year: 2010, country: '日本 · 京都',
+          color: '#ff5b3a',
+          album: { zh: '《A N D》', en: 'A N D', year: 2015 },
+          desc: '把数摇变得"好听"。Ikkyu 的女声搭配三件套乐器的复杂节奏，是日本数摇大众化的代表。'
+        },
+      ]
+    },
+    {
+      num: '04',
+      zh: '后噪音 · 实验数摇',
+      en: 'Post-Noise / Experimental',
+      era: '2003 — 2012',
+      region: '美国 · 加州 / 纽约',
+      desc: `
+        <p>数摇与<strong>noise rock、post-punk、IDM</strong> 的杂交品种。这一代乐队不满足于清音琶音，他们重新引入失真、合成器、采样、电子节拍——但仍然保持数摇的"<em>每一层都能被独立听见</em>"的原则。</p>
+        <p>Tera Melos 用吉他效果器的极限把数摇推向了一个新方向；Battles 则把它和 krautrock、IDM 结合，造出了几乎是另一种音乐的东西。</p>
+      `,
+      bands: [
+        {
+          zh: 'Tera Melos', en: 'Tera Melos',
+          year: 2004, country: '美国 · 萨克拉门托',
+          color: '#d4ff3a',
+          album: { zh: '《亲爱青年的毒品》', en: 'Drugs to the Dear Youth', year: 2007 },
+          desc: '效果器使用的实验场。同一首歌可能从清音琶音突然跳到合成器噪音再回到爵士节奏——还非常好听。'
+        },
+        {
+          zh: 'Battles', en: 'Battles',
+          year: 2002, country: '美国 · 纽约',
+          color: '#ff5b3a',
+          album: { zh: '《镜像》', en: 'Mirrored', year: 2007 },
+          desc: '《Atlas》是 21 世纪最具辨识度的数摇歌曲之一。把 krautrock 的循环与数摇的复节奏融合，听一次就忘不掉。'
+        },
+      ]
+    },
+    {
+      num: '05',
+      zh: '英国数摇浪潮',
+      en: 'British Math Wave',
+      era: '2008 — 至今',
+      region: '英国 · 伦敦 / 利物浦 / 布莱顿',
+      desc: `
+        <p>2010 年代英国突然成为数摇热土。这一代乐队继承了美国第一波的复杂节奏，但加入了<strong>英国独立摇滚</strong>的调性——更注重旋律、更多人声、更多<em>幽默</em>。Alpha Male Tea Party 的歌名长得像 Twitter 段子（《You Eat Houmous, Of Course You Listen To Genesis》），但音乐严肃得不行。</p>
+        <p>这场运动的中心是 ArcTanGent 音乐节（2013 年创办于布里斯托），它让数摇第一次有了"主场"。</p>
+      `,
+      bands: [
+        {
+          zh: 'TTNG', en: 'This Town Needs Guns',
+          year: 2004, country: '英国 · 牛津',
+          color: '#d4ff3a',
+          album: { zh: '《动物》', en: 'Animals', year: 2008 },
+          desc: '把"twinkly"美学集大成的英国数摇里程碑。每首歌以一种动物命名，每首都有 13/8 一类的怪拍号。'
+        },
+        {
+          zh: 'Delta Sleep', en: 'Delta Sleep',
+          year: 2010, country: '英国 · 布莱顿',
+          color: '#ff5b3a',
+          album: { zh: '《幽灵之城》', en: 'Ghost City', year: 2018 },
+          desc: '当代数摇向<em>氛围</em>和<em>叙事</em>转向的代表。少噪点、多空间，更接近 post-rock 的边界。'
+        },
+      ]
+    },
+    {
+      num: '06',
+      zh: '当代旋律 · 卧室数摇',
+      en: 'Modern Melodic / Bedroom Math',
+      era: '2013 — 至今',
+      region: '美国 / 全球互联网',
+      desc: `
+        <p>YouTube + Bandcamp + DAW 的产物。这一代乐手往往是<strong>独立制作人</strong>——一个吉他手 + 一台鼓机 + 一个录音接口就能做出整张专辑。地理位置不再重要，<em>互联网就是他们的场景</em>。</p>
+        <p>音色普遍明亮、情绪正面、技术过剩——CHON 和 Polyphia 的吉他像在表演体操；Standards 则把"快乐"做成了一种风格。这一波也是数摇<strong>第一次出现在 TikTok 与游戏 OST 中</strong>，把流派带给了全新一代听众。</p>
+      `,
+      bands: [
+        {
+          zh: 'CHON', en: 'CHON',
+          year: 2008, country: '美国 · 圣地亚哥',
+          color: '#d4ff3a',
+          album: { zh: '《Grow》', en: 'Grow', year: 2015 },
+          desc: '把数摇变成了"好听到能放在咖啡馆"。明亮的爵士和声 + 双吉他点弦——数摇主流化的代表。'
+        },
+        {
+          zh: 'Standards', en: 'standards',
+          year: 2018, country: '美国 · 洛杉矶',
+          color: '#ff5b3a',
+          album: { zh: '《水果城》', en: 'Fruit Town', year: 2022 },
+          desc: '一个人 + 一把吉他 + 一台鼓的"卧室数摇"。Marcos Mena 用一把吉他同时打出贝斯与主旋律，TikTok 让他爆红。'
+        },
+      ]
+    },
+  ];
+
+  const container = document.getElementById('scenes-container');
+  container.innerHTML = SCENES.map(s => `
+    <section class="scene-section">
+      <div class="container">
+        <div class="scene-meta">
+          <div>
+            <div class="scene-num">SCENE ${s.num}</div>
+            <h2 class="scene-title">
+              ${s.zh}
+              <span class="en">${s.en}</span>
+            </h2>
+            <div class="scene-stats">
+              <span><span class="label">年代 ·</span>${s.era}</span>
+              <span><span class="label">地区 ·</span>${s.region}</span>
+            </div>
+          </div>
+          <div class="scene-desc">${s.desc}</div>
+        </div>
+
+        <div class="band-grid">
+          ${s.bands.map((b, i) => `
+            <div class="band-card">
+              <svg class="wave" viewBox="0 0 200 36">
+                <polyline data-wave="${s.num}-${i}" fill="none" stroke="${b.color}" stroke-width="1.2"/>
+              </svg>
+              <div class="meta-row">
+                <span>${b.country}</span>
+                <span>EST. ${b.year}</span>
+              </div>
+              <h3>${b.zh}</h3>
+              <div class="en-name">${b.en}</div>
+              <div class="album-block">
+                <div class="album-label">代表专辑 · KEY ALBUM</div>
+                <div class="album-name">
+                  ${b.album.zh}
+                  <span class="en">${b.album.en} · ${b.album.year}</span>
+                </div>
+                <div class="desc">${b.desc}</div>
+              </div>
+              <div class="arrow">检视 / Inspect →</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `).join('');
+
+  // 节拍器驱动每张卡片的微波形
+  const polys = document.querySelectorAll('[data-wave]');
+  let waveSeed = 0;
+  polys.forEach(p => p.dataset.seed = waveSeed++);
+  window.subscribeTick((tick) => {
+    polys.forEach(p => {
+      const offset = parseInt(p.dataset.seed) * 7;
+      const points = [];
+      for (let x = 0; x < 200; x++) {
+        const y = 18 + Math.sin((x + tick + offset) * 0.1) * 10 + Math.sin((x + offset) * 0.3) * 3;
+        points.push(`${x},${y}`);
+      }
+      p.setAttribute('points', points.join(' '));
+    });
+  });
+
+  // 卡片点击涟漪
+  document.querySelectorAll('.band-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      const rect = card.getBoundingClientRect();
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = (e.clientX - rect.left) + 'px';
+      ripple.style.top = (e.clientY - rect.top) + 'px';
+      card.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1200);
+    });
+  });
+</script>
+
+</body>
+</html>

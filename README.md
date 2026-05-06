@@ -1,4 +1,4 @@
-# 复拍 POLYMETER · 数学摇滚田野指南
+# 复拍 POLYMETER 
 
 ## 文件结构
 
